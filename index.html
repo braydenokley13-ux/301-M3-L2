@@ -21,6 +21,8 @@
     --text-dim: #94a3b8;
     --border: #1e293b;
     --panel: #111827;
+    --purple: #a78bfa;
+    --teal: #2dd4bf;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -33,414 +35,310 @@
     overflow-x: hidden;
   }
 
-  /* ---- HEADER ---- */
   .header {
     background: linear-gradient(135deg, #1e3a5f 0%, #0b1020 100%);
     border-bottom: 1px solid var(--border);
-    padding: 20px 24px;
+    padding: 18px 24px;
     text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
   }
-  .header h1 {
-    font-size: 1.5rem;
-    color: var(--accent-glow);
-    letter-spacing: 1px;
-  }
-  .header .subtitle {
-    font-size: 0.85rem;
-    color: var(--text-dim);
-    margin-top: 4px;
-  }
+  .header h1 { font-size: 1.4rem; color: var(--accent-glow); letter-spacing: 1px; }
+  .header .subtitle { font-size: 0.82rem; color: var(--text-dim); margin-top: 3px; }
 
-  /* ---- LAYOUT ---- */
-  .game-container {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 20px;
-  }
+  .game-container { max-width: 1200px; margin: 0 auto; padding: 20px; }
 
-  /* ---- SCENARIO PANEL ---- */
-  .scenario-panel {
+  /* ---- SETUP ---- */
+  .setup-screen {
+    max-width: 620px;
+    margin: 40px auto;
     background: var(--card);
     border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 24px;
-    margin-bottom: 20px;
+    border-radius: 14px;
+    padding: 36px;
+    text-align: center;
   }
-  .scenario-panel h2 {
-    color: var(--gold);
-    font-size: 1.1rem;
-    margin-bottom: 8px;
+  .setup-screen h2 { color: var(--accent-glow); margin-bottom: 6px; font-size: 1.6rem; }
+  .setup-screen .setup-badge { color: var(--gold); font-size: 0.85rem; margin-bottom: 16px; }
+  .setup-screen p { font-size: 0.9rem; color: var(--text-dim); margin-bottom: 16px; line-height: 1.7; text-align: left; }
+  .setup-screen input {
+    width: 100%; padding: 12px 16px; background: var(--panel); border: 1px solid var(--border);
+    border-radius: 8px; color: var(--text); font-size: 0.95rem; margin-bottom: 12px; outline: none;
   }
-  .scenario-panel p {
-    font-size: 0.92rem;
-    line-height: 1.6;
-    color: var(--text-dim);
+  .setup-screen input:focus { border-color: var(--accent); }
+  .setup-screen .start-btn {
+    width: 100%; padding: 14px; background: var(--accent); color: white; border: none;
+    border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: background 0.2s;
   }
-  .scenario-panel .truth-badges {
-    display: flex;
-    gap: 10px;
-    margin-top: 14px;
-    flex-wrap: wrap;
+  .setup-screen .start-btn:hover { background: #2563eb; }
+  .error-msg { color: var(--red); font-size: 0.82rem; margin-bottom: 8px; display: none; }
+
+  .setup-feature-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+    margin: 16px 0; text-align: left;
   }
+  .setup-feature {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 8px;
+    padding: 10px 12px; font-size: 0.8rem; color: var(--text-dim); line-height: 1.4;
+  }
+  .setup-feature strong { color: var(--accent-glow); display: block; margin-bottom: 2px; }
+
+  /* ---- SCENARIO ---- */
+  .scenario-panel {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 20px 24px; margin-bottom: 16px;
+  }
+  .scenario-panel h2 { color: var(--gold); font-size: 1.05rem; margin-bottom: 6px; }
+  .scenario-panel p { font-size: 0.88rem; line-height: 1.6; color: var(--text-dim); }
+  .truth-badges { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
   .truth-badge {
-    background: #1e293b;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 6px 12px;
-    font-size: 0.8rem;
-    color: var(--text-dim);
+    background: #1e293b; border: 1px solid var(--border); border-radius: 8px;
+    padding: 5px 11px; font-size: 0.78rem; color: var(--text-dim);
   }
   .truth-badge strong { color: var(--accent-glow); }
+  .truth-badge.hidden-truth { border-style: dashed; }
+  .truth-badge.hidden-truth strong { color: var(--purple); }
+
+  /* ---- INTEL DOSSIER ---- */
+  .intel-panel {
+    background: linear-gradient(135deg, #1a1a2e 0%, var(--card) 100%);
+    border: 1px solid #2d1b69;
+    border-radius: 12px; padding: 20px 24px; margin-bottom: 16px;
+  }
+  .intel-panel h2 { color: var(--purple); font-size: 1rem; margin-bottom: 10px; }
+  .intel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .intel-item {
+    background: rgba(167,139,250,0.06); border: 1px solid rgba(167,139,250,0.15);
+    border-radius: 8px; padding: 8px 12px; font-size: 0.8rem; color: var(--text-dim); line-height: 1.4;
+  }
+  .intel-item strong { color: var(--purple); }
 
   /* ---- METERS ---- */
   .meters-row {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 12px;
-    margin-bottom: 20px;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px; margin-bottom: 16px;
   }
   .meter-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 14px;
-    text-align: center;
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 12px; text-align: center; transition: border-color 0.4s;
   }
-  .meter-card .meter-label {
-    font-size: 0.75rem;
-    color: var(--text-dim);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 8px;
-  }
-  .meter-bar-bg {
-    height: 10px;
-    background: #1e293b;
-    border-radius: 5px;
-    overflow: hidden;
-    margin-bottom: 6px;
-  }
-  .meter-bar-fill {
-    height: 100%;
-    border-radius: 5px;
-    transition: width 0.6s ease, background 0.6s ease;
-  }
-  .meter-value {
-    font-size: 1.1rem;
-    font-weight: 700;
-  }
-  .meter-number {
-    font-size: 0.75rem;
-    color: var(--text-dim);
-  }
+  .meter-card.pulse-good { animation: pulseGood 0.6s ease; }
+  .meter-card.pulse-bad { animation: pulseBad 0.6s ease; }
+  @keyframes pulseGood { 0%,100% { border-color: var(--border); } 50% { border-color: var(--green); } }
+  @keyframes pulseBad { 0%,100% { border-color: var(--border); } 50% { border-color: var(--red); } }
+  .meter-label { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+  .meter-bar-bg { height: 8px; background: #1e293b; border-radius: 4px; overflow: hidden; margin-bottom: 4px; }
+  .meter-bar-fill { height: 100%; border-radius: 4px; transition: width 0.7s ease, background 0.5s ease; }
+  .meter-value { font-size: 1rem; font-weight: 700; }
+  .meter-number { font-size: 0.7rem; color: var(--text-dim); }
+  .meter-delta { font-size: 0.7rem; font-weight: 600; min-height: 1em; margin-top: 2px; }
 
-  /* ---- TURN AREA ---- */
+  /* ---- MOMENTUM ---- */
+  .momentum-bar {
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 10px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 12px;
+  }
+  .momentum-label { font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; white-space: nowrap; }
+  .momentum-track { flex: 1; height: 8px; background: #1e293b; border-radius: 4px; overflow: hidden; }
+  .momentum-fill { height: 100%; border-radius: 4px; transition: width 0.6s ease, background 0.4s ease; }
+  .momentum-text { font-size: 0.82rem; font-weight: 600; min-width: 80px; text-align: right; }
+
+  /* ---- OPPONENT REACTION ---- */
+  .opponent-box {
+    background: linear-gradient(135deg, #1a0a0a 0%, var(--card) 100%);
+    border: 1px solid rgba(239,68,68,0.2); border-radius: 12px;
+    padding: 16px 20px; margin-bottom: 16px; display: none;
+  }
+  .opponent-box.visible { display: block; animation: fadeSlide 0.5s ease; }
+  .opponent-box h3 { color: var(--red); font-size: 0.9rem; margin-bottom: 8px; }
+  .opponent-box p { font-size: 0.85rem; color: var(--text-dim); line-height: 1.6; }
+  .opponent-mood { display: inline-block; padding: 3px 10px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; margin-top: 8px; }
+
+  /* ---- NEWS TICKER ---- */
+  .news-event {
+    background: linear-gradient(135deg, #1a1a0a 0%, var(--card) 100%);
+    border: 1px solid rgba(234,179,8,0.25); border-radius: 12px;
+    padding: 16px 20px; margin-bottom: 16px; display: none;
+  }
+  .news-event.visible { display: block; animation: fadeSlide 0.5s ease; }
+  .news-event h3 { color: var(--gold); font-size: 0.9rem; margin-bottom: 6px; }
+  .news-event p { font-size: 0.85rem; color: var(--text-dim); line-height: 1.5; }
+
+  /* ---- PHASE BAR ---- */
+  .phase-bar { display: flex; gap: 6px; margin-bottom: 16px; justify-content: center; align-items: center; }
+  .phase-dot { width: 32px; height: 5px; border-radius: 3px; background: #1e293b; transition: background 0.4s; }
+  .phase-dot.active { background: var(--accent); }
+  .phase-dot.done { background: var(--green); }
+  .phase-label { font-size: 0.72rem; color: var(--text-dim); margin-left: 8px; }
+
+  /* ---- HISTORY ---- */
+  .history-strip { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+  .history-chip {
+    background: #1e293b; border-radius: 6px; padding: 5px 10px;
+    font-size: 0.75rem; color: var(--text-dim); border: 1px solid var(--border);
+  }
+  .history-chip .chip-turn { color: var(--accent-glow); font-weight: 600; }
+  .history-chip.effective { border-color: rgba(34,197,94,0.3); }
+  .history-chip.backfired { border-color: rgba(239,68,68,0.3); }
+  .history-chip.strong { border-color: rgba(45,212,191,0.3); }
+  .history-chip.risky { border-color: rgba(234,179,8,0.3); }
+
+  /* ---- TURN PANEL ---- */
   .turn-panel {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 24px;
-    margin-bottom: 20px;
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 24px; margin-bottom: 20px;
   }
-  .turn-panel h2 {
-    font-size: 1rem;
-    color: var(--accent-glow);
-    margin-bottom: 6px;
+  .turn-panel h2 { font-size: 1rem; color: var(--accent-glow); margin-bottom: 4px; }
+  .turn-prompt { font-size: 0.88rem; color: var(--text-dim); margin-bottom: 14px; line-height: 1.6; }
+
+  /* ---- CATEGORY TABS ---- */
+  .cat-tabs { display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
+  .cat-tab {
+    padding: 6px 14px; border-radius: 6px; font-size: 0.78rem; font-weight: 600;
+    cursor: pointer; border: 1px solid var(--border); background: var(--panel);
+    color: var(--text-dim); transition: all 0.2s;
   }
-  .turn-panel .turn-prompt {
-    font-size: 0.88rem;
-    color: var(--text-dim);
-    margin-bottom: 16px;
-    line-height: 1.5;
-  }
+  .cat-tab:hover { border-color: var(--accent); color: var(--text); }
+  .cat-tab.active { background: var(--accent); border-color: var(--accent); color: white; }
+  .cat-tab .cat-count { opacity: 0.7; margin-left: 4px; }
 
   /* ---- SIGNAL CARDS ---- */
-  .signal-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 12px;
-  }
+  .signal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 10px; }
   .signal-card {
-    background: var(--panel);
-    border: 2px solid var(--border);
-    border-radius: 10px;
-    padding: 16px;
-    cursor: pointer;
-    transition: all 0.2s;
-    position: relative;
+    background: var(--panel); border: 2px solid var(--border); border-radius: 10px;
+    padding: 14px 16px; cursor: pointer; transition: all 0.2s; position: relative;
   }
-  .signal-card:hover {
-    border-color: var(--accent);
-    background: var(--card-hover);
-    transform: translateY(-2px);
-  }
-  .signal-card.selected {
-    border-color: var(--accent-glow);
-    box-shadow: 0 0 16px rgba(59,130,246,0.25);
-  }
-  .signal-card.locked {
-    opacity: 0.4;
-    cursor: not-allowed;
-    pointer-events: none;
-  }
-  .signal-card .sig-name {
-    font-size: 0.95rem;
-    font-weight: 600;
-    margin-bottom: 6px;
-    color: var(--text);
-  }
-  .signal-card .sig-desc {
-    font-size: 0.8rem;
-    color: var(--text-dim);
-    line-height: 1.4;
-    margin-bottom: 10px;
-  }
-  .signal-card .sig-effects {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-  }
-  .sig-tag {
-    font-size: 0.7rem;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-weight: 600;
-  }
+  .signal-card:hover { border-color: var(--accent); background: var(--card-hover); transform: translateY(-1px); }
+  .signal-card.selected { border-color: var(--accent-glow); box-shadow: 0 0 16px rgba(59,130,246,0.25); }
+  .signal-card.locked { opacity: 0.35; cursor: not-allowed; pointer-events: none; }
+  .signal-card.used { opacity: 0.25; cursor: not-allowed; pointer-events: none; }
+  .signal-card .sig-name { font-size: 0.92rem; font-weight: 600; margin-bottom: 4px; color: var(--text); padding-right: 70px; }
+  .signal-card .sig-desc { font-size: 0.78rem; color: var(--text-dim); line-height: 1.4; margin-bottom: 8px; }
+  .signal-card .sig-effects { display: flex; gap: 4px; flex-wrap: wrap; }
+  .sig-tag { font-size: 0.68rem; padding: 2px 7px; border-radius: 4px; font-weight: 600; }
   .sig-tag.pos { background: rgba(34,197,94,0.15); color: #4ade80; }
   .sig-tag.neg { background: rgba(239,68,68,0.15); color: #f87171; }
   .sig-tag.neutral { background: rgba(148,163,184,0.15); color: #94a3b8; }
   .sig-tag.cost { background: rgba(234,179,8,0.12); color: #facc15; }
   .sig-tag.restricted { background: rgba(239,68,68,0.2); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
-
-  .signal-card .sig-tier {
-    position: absolute;
-    top: 8px;
-    right: 10px;
-    font-size: 0.65rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--text-dim);
+  .sig-tag.synergy { background: rgba(45,212,191,0.15); color: #2dd4bf; }
+  .sig-tag.elite { background: rgba(167,139,250,0.15); color: #a78bfa; border: 1px solid rgba(167,139,250,0.3); }
+  .signal-card .sig-tier-badge {
+    position: absolute; top: 8px; right: 10px; font-size: 0.62rem;
+    text-transform: uppercase; letter-spacing: 0.5px; padding: 2px 6px;
+    border-radius: 3px; font-weight: 600;
+  }
+  .sig-tier-badge.open { background: rgba(34,197,94,0.1); color: #4ade80; }
+  .sig-tier-badge.advanced { background: rgba(234,179,8,0.15); color: #facc15; }
+  .sig-tier-badge.restricted { background: rgba(239,68,68,0.15); color: #f87171; }
+  .sig-tier-badge.elite { background: rgba(167,139,250,0.15); color: #a78bfa; }
+  .signal-card .sig-synergy-hint {
+    font-size: 0.72rem; color: var(--teal); margin-top: 6px; font-style: italic;
+  }
+  .signal-card .sig-lock-reason {
+    font-size: 0.7rem; color: var(--red); margin-top: 4px; font-style: italic;
   }
 
-  /* ---- APPLY BUTTON ---- */
+  /* ---- STRATEGY NOTE ---- */
+  .strategy-note {
+    background: rgba(59,130,246,0.06); border: 1px solid rgba(59,130,246,0.15);
+    border-radius: 8px; padding: 10px 14px; margin-top: 12px;
+    font-size: 0.8rem; color: var(--text-dim); line-height: 1.5;
+  }
+  .strategy-note strong { color: var(--accent-glow); }
+
+  /* ---- BUTTONS ---- */
   .apply-btn {
-    display: inline-block;
-    margin-top: 16px;
-    padding: 12px 32px;
-    background: var(--accent);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 0.95rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
+    display: inline-block; margin-top: 14px; padding: 12px 32px;
+    background: var(--accent); color: white; border: none; border-radius: 8px;
+    font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
   }
   .apply-btn:hover { background: #2563eb; transform: translateY(-1px); }
-  .apply-btn:disabled {
-    background: #334155;
-    color: #64748b;
-    cursor: not-allowed;
-    transform: none;
-  }
+  .apply-btn:disabled { background: #334155; color: #64748b; cursor: not-allowed; transform: none; }
 
-  /* ---- NARRATIVE FEEDBACK ---- */
+  /* ---- NARRATIVE ---- */
   .narrative-box {
-    background: #0f172a;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 16px;
-    margin-top: 16px;
-    font-size: 0.88rem;
-    line-height: 1.6;
-    display: none;
+    background: #0f172a; border: 1px solid var(--border); border-radius: 10px;
+    padding: 18px; margin-top: 16px; font-size: 0.88rem; line-height: 1.7; display: none;
   }
   .narrative-box.visible { display: block; animation: fadeSlide 0.4s ease; }
-  .narrative-box .narr-action { color: var(--accent-glow); font-weight: 600; }
-  .narrative-box .narr-reaction { color: var(--text-dim); margin-top: 8px; }
-  .narrative-box .narr-judgment { margin-top: 10px; font-weight: 600; }
+  .narr-section { margin-bottom: 12px; }
+  .narr-section:last-child { margin-bottom: 0; }
+  .narr-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px; font-weight: 600; }
+  .narr-action .narr-label { color: var(--accent-glow); }
+  .narr-reaction .narr-label { color: var(--gold); }
+  .narr-text { color: var(--text-dim); }
+  .narr-judgment { font-weight: 600; font-size: 0.9rem; padding: 8px 0; }
   .narr-judgment.effective { color: var(--green); }
+  .narr-judgment.strong { color: var(--teal); }
   .narr-judgment.backfired { color: var(--red); }
   .narr-judgment.neutral { color: var(--yellow); }
+  .narr-judgment.risky { color: var(--gold); }
+  .narr-why { color: var(--text-dim); font-size: 0.84rem; }
+  .narr-synergy { color: var(--teal); font-size: 0.82rem; margin-top: 6px; }
+  .narr-warning { color: var(--gold); font-size: 0.82rem; margin-top: 6px; }
+  .narr-delay { color: var(--purple); font-size: 0.82rem; margin-top: 6px; }
 
   @keyframes fadeSlide {
-    from { opacity: 0; transform: translateY(8px); }
+    from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
   }
 
-  /* ---- RESULTS SCREEN ---- */
-  .results-screen {
-    display: none;
-  }
+  /* ---- RESULTS ---- */
+  .results-screen { display: none; }
   .results-screen.visible { display: block; animation: fadeSlide 0.5s ease; }
   .results-section {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 24px;
-    margin-bottom: 16px;
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 24px; margin-bottom: 16px;
   }
-  .results-section h2 {
-    color: var(--gold);
-    font-size: 1.05rem;
-    margin-bottom: 12px;
-  }
-  .results-section h3 {
-    color: var(--accent-glow);
-    font-size: 0.95rem;
-    margin-bottom: 8px;
-  }
-  .results-section p {
-    font-size: 0.88rem;
-    line-height: 1.6;
-    color: var(--text-dim);
-    margin-bottom: 8px;
-  }
+  .results-section h2 { color: var(--gold); font-size: 1.05rem; margin-bottom: 12px; }
+  .results-section h3 { color: var(--accent-glow); font-size: 0.95rem; margin-bottom: 8px; }
+  .results-section p { font-size: 0.86rem; line-height: 1.6; color: var(--text-dim); margin-bottom: 8px; }
   .result-stat {
-    display: inline-block;
-    background: #1e293b;
-    border-radius: 6px;
-    padding: 4px 10px;
-    margin: 2px 4px 2px 0;
-    font-size: 0.8rem;
-    color: var(--text);
+    display: inline-block; background: #1e293b; border-radius: 6px;
+    padding: 4px 10px; margin: 2px 4px 2px 0; font-size: 0.78rem; color: var(--text);
   }
   .verdict-box {
     background: linear-gradient(135deg, #1e3a5f 0%, var(--card) 100%);
-    border: 1px solid var(--accent);
-    border-radius: 12px;
-    padding: 24px;
-    margin-top: 16px;
-    text-align: center;
+    border: 1px solid var(--accent); border-radius: 12px;
+    padding: 28px; margin-top: 16px; text-align: center;
   }
-  .verdict-box .tier-badge {
-    font-size: 1.8rem;
-    font-weight: 800;
-    margin-bottom: 8px;
-  }
+  .verdict-box .tier-badge { font-size: 2rem; font-weight: 800; margin-bottom: 8px; }
   .verdict-box .tier-badge.gold { color: var(--gold); }
   .verdict-box .tier-badge.silver { color: var(--silver); }
   .verdict-box .tier-badge.bronze { color: var(--bronze); }
   .verdict-box .tier-badge.none { color: var(--red); }
-  .verdict-text {
-    font-size: 0.92rem;
-    color: var(--text-dim);
-    max-width: 600px;
-    margin: 0 auto;
-    line-height: 1.6;
-  }
+  .verdict-text { font-size: 0.92rem; color: var(--text-dim); max-width: 650px; margin: 0 auto; line-height: 1.7; }
   .cf-box {
-    background: rgba(245,158,11,0.08);
-    border-left: 3px solid var(--gold);
-    border-radius: 0 6px 6px 0;
-    padding: 12px 16px;
-    margin-top: 10px;
-    font-size: 0.85rem;
+    background: rgba(245,158,11,0.08); border-left: 3px solid var(--gold);
+    border-radius: 0 6px 6px 0; padding: 12px 16px; margin-top: 10px; font-size: 0.82rem;
   }
   .cf-box strong { color: var(--gold); }
 
-  /* ---- PHASE INDICATOR ---- */
-  .phase-bar {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 20px;
-    justify-content: center;
+  /* ---- LEARNING INSIGHTS ---- */
+  .insight-box {
+    background: rgba(59,130,246,0.06); border: 1px solid rgba(59,130,246,0.15);
+    border-radius: 8px; padding: 14px 18px; margin-top: 12px;
   }
-  .phase-dot {
-    width: 36px;
-    height: 6px;
-    border-radius: 3px;
-    background: #1e293b;
-    transition: background 0.4s;
-  }
-  .phase-dot.active { background: var(--accent); }
-  .phase-dot.done { background: var(--green); }
-
-  /* ---- SETUP SCREEN ---- */
-  .setup-screen {
-    max-width: 500px;
-    margin: 60px auto;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 32px;
-    text-align: center;
-  }
-  .setup-screen h2 {
-    color: var(--accent-glow);
-    margin-bottom: 12px;
-  }
-  .setup-screen p {
-    font-size: 0.88rem;
-    color: var(--text-dim);
-    margin-bottom: 20px;
-    line-height: 1.6;
-  }
-  .setup-screen input {
-    width: 100%;
-    padding: 12px 16px;
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--text);
-    font-size: 0.95rem;
-    margin-bottom: 12px;
-    outline: none;
-  }
-  .setup-screen input:focus { border-color: var(--accent); }
-  .setup-screen .start-btn {
-    width: 100%;
-    padding: 14px;
-    background: var(--accent);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-  .setup-screen .start-btn:hover { background: #2563eb; }
-  .error-msg {
-    color: var(--red);
-    font-size: 0.82rem;
-    margin-bottom: 8px;
-    display: none;
-  }
+  .insight-box h4 { color: var(--accent-glow); font-size: 0.85rem; margin-bottom: 6px; }
+  .insight-box p { font-size: 0.82rem; color: var(--text-dim); line-height: 1.6; margin: 0; }
 
   /* ---- RESTART ---- */
   .restart-btn {
-    display: inline-block;
-    margin-top: 20px;
-    padding: 12px 28px;
-    background: transparent;
-    color: var(--accent-glow);
-    border: 1px solid var(--accent);
-    border-radius: 8px;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: all 0.2s;
+    display: inline-block; margin-top: 20px; padding: 12px 28px;
+    background: transparent; color: var(--accent-glow); border: 1px solid var(--accent);
+    border-radius: 8px; font-size: 0.9rem; cursor: pointer; transition: all 0.2s;
   }
   .restart-btn:hover { background: rgba(59,130,246,0.1); }
 
-  /* ---- TURN HISTORY SIDEBAR ---- */
-  .history-strip {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 16px;
-    flex-wrap: wrap;
+  /* ---- RESPONSIVE ---- */
+  @media (max-width: 700px) {
+    .signal-grid { grid-template-columns: 1fr; }
+    .meters-row { grid-template-columns: repeat(3, 1fr); }
+    .intel-grid { grid-template-columns: 1fr; }
+    .setup-feature-grid { grid-template-columns: 1fr; }
   }
-  .history-chip {
-    background: #1e293b;
-    border-radius: 6px;
-    padding: 6px 12px;
-    font-size: 0.78rem;
-    color: var(--text-dim);
-    border: 1px solid var(--border);
-  }
-  .history-chip .chip-turn { color: var(--accent-glow); font-weight: 600; }
-  .history-chip.effective { border-color: rgba(34,197,94,0.3); }
-  .history-chip.backfired { border-color: rgba(239,68,68,0.3); }
 </style>
 </head>
 <body>
@@ -448,656 +346,980 @@
 <!-- ============ SETUP SCREEN ============ -->
 <div id="setupScreen" class="setup-screen">
   <h2>BOW Sports Capital</h2>
-  <p><strong>Module 3 · Lesson 2 — Signal Engine</strong></p>
+  <div class="setup-badge">Module 3 &middot; Lesson 2 &mdash; Signal Engine</div>
+
   <p>
-    You're a rookie sports agent. Your client — star point guard <strong>Marcus Chen</strong> —
-    is a restricted free agent. The Rivercats front office thinks they can lowball him.
-    Your job: send the right signals over 3 rounds to shift their beliefs and land Marcus a fair deal.
+    You're a <strong>rookie sports agent</strong>. Your client &mdash; star point guard
+    <strong>Marcus Chen</strong> (24, averaging 19.2 PPG) &mdash; is a restricted free agent.
+    The <strong>Rivercats</strong> front office thinks they can lowball him. They're wrong &mdash;
+    but only if you prove it.
   </p>
-  <p style="font-size:0.82rem;">
-    Every move you make changes what the front office <em>believes</em> about your alternatives,
-    how urgent the deal is, and whether your demands are fair. Choose wisely — credibility is limited,
-    and contradictions backfire.
+  <p>
+    Over <strong>5 rounds of negotiation</strong>, you'll choose signals that shift what the
+    front office <em>believes</em> about your leverage. But this isn't a game of picking
+    the strongest move &mdash; it's about <strong>sequence, timing, and credibility management</strong>.
+    The front office reacts to everything you do. Contradictions destroy trust. Bluffs get called.
+    And every signal costs something.
   </p>
+
+  <div class="setup-feature-grid">
+    <div class="setup-feature"><strong>5 Rounds</strong>Opening, positioning, pivot, pressure, close</div>
+    <div class="setup-feature"><strong>24 Signals</strong>Across 4 tiers with synergies and traps</div>
+    <div class="setup-feature"><strong>Live Opponent</strong>The GM reacts and adapts to your strategy</div>
+    <div class="setup-feature"><strong>Random Events</strong>Breaking news shifts the landscape mid-deal</div>
+    <div class="setup-feature"><strong>Momentum</strong>Consistent signals compound; contradictions collapse</div>
+    <div class="setup-feature"><strong>Hidden Intel</strong>Your true position matters &mdash; bluffs have consequences</div>
+  </div>
 
   <input type="text" id="nameInput" placeholder="Your full name (first and last)" />
   <input type="email" id="emailInput" placeholder="Your school email" />
   <div id="setupError" class="error-msg"></div>
-  <button class="start-btn" onclick="startGame()">Start Negotiation</button>
+  <button class="start-btn" onclick="startGame()">Enter the Negotiation Room</button>
 </div>
 
 <!-- ============ GAME SCREEN ============ -->
 <div id="gameScreen" style="display:none;">
   <div class="header">
     <h1>SIGNAL ENGINE</h1>
-    <div class="subtitle">BOW Track 301 · Module 3 · Lesson 2 — Sports Agent Negotiation</div>
+    <div class="subtitle">BOW Track 301 &middot; Module 3 &middot; Lesson 2 &mdash; Sports Agent Negotiation</div>
   </div>
 
   <div class="game-container">
-    <!-- Phase dots -->
-    <div class="phase-bar">
-      <div class="phase-dot" id="pd1"></div>
-      <div class="phase-dot" id="pd2"></div>
-      <div class="phase-dot" id="pd3"></div>
-      <div class="phase-dot" id="pd4"></div>
-    </div>
-
-    <!-- Scenario context -->
+    <div class="phase-bar" id="phaseBar"></div>
     <div class="scenario-panel" id="scenarioPanel">
       <h2 id="scenarioTitle">The Situation</h2>
       <p id="scenarioText"></p>
       <div class="truth-badges" id="truthBadges"></div>
     </div>
-
-    <!-- Meters -->
+    <div class="intel-panel" id="intelPanel">
+      <h2>Your Intel Dossier (Private)</h2>
+      <div class="intel-grid" id="intelGrid"></div>
+    </div>
     <div class="meters-row" id="metersRow"></div>
-
-    <!-- Turn history chips -->
+    <div class="momentum-bar" id="momentumBar">
+      <span class="momentum-label">Momentum</span>
+      <div class="momentum-track"><div class="momentum-fill" id="momentumFill"></div></div>
+      <span class="momentum-text" id="momentumText">Neutral</span>
+    </div>
+    <div class="opponent-box" id="opponentBox">
+      <h3 id="opponentTitle">GM Derek Walsh</h3>
+      <p id="opponentText"></p>
+      <div class="opponent-mood" id="opponentMood"></div>
+    </div>
+    <div class="news-event" id="newsEvent">
+      <h3 id="newsTitle"></h3>
+      <p id="newsText"></p>
+    </div>
     <div class="history-strip" id="historyStrip"></div>
-
-    <!-- Turn panel (signal selection) -->
     <div class="turn-panel" id="turnPanel">
-      <h2 id="turnTitle">Round 1 of 3</h2>
+      <h2 id="turnTitle"></h2>
       <p class="turn-prompt" id="turnPrompt"></p>
+      <div class="cat-tabs" id="catTabs"></div>
       <div class="signal-grid" id="signalGrid"></div>
+      <div class="strategy-note" id="strategyNote"></div>
       <button class="apply-btn" id="applyBtn" onclick="applySignal()" disabled>Select a Signal</button>
       <div class="narrative-box" id="narrativeBox"></div>
     </div>
-
-    <!-- Results screen -->
     <div class="results-screen" id="resultsScreen"></div>
   </div>
 </div>
 
 <script>
 // ============================================================
-//  SIGNAL CATALOG — concrete sports agent moves
+//  SIGNAL CATALOG — 24 signals across 4 tiers / 5 categories
 // ============================================================
 const CATALOG = [
-  // --- TIER: OPEN (always available) ---
+  // ======= CATEGORY: INFORMATION (build perception with data) =======
   {
-    id: "COMP_BRIEF",
-    name: "Share Comparable Contracts",
-    desc: "Present a brief showing what similar players signed elsewhere — lets the front office see the market rate without you making demands directly.",
-    shortAction: "You slide a one-page brief across the table: three comparable deals from the last two seasons.",
-    whatTheySee: "The front office sees hard data suggesting their offer is below market. They start doing their own math.",
-    beliefGoal: "Strengthen their belief that Marcus has real alternatives.",
-    failureMode: "If your credibility is already shaky, they dismiss the comps as cherry-picked.",
-    tier: "OPEN", requiresTruth: "NONE",
-    dA: 12, dU: -3, dF: 5,
-    credCost: 4, backlashBase: 2, delayTurns: 0,
-    primaryUse: "Build alternatives perception early",
-    worksWhen: "Used early with strong credibility",
-    failsWhen: "Comps are weak or credibility is already damaged"
+    id:"COMP_BRIEF", cat:"Information", name:"Share Comparable Contracts",
+    desc:"Present a brief showing what similar players signed. Lets the front office see the market rate without you making demands.",
+    shortAction:"You slide a one-page brief across the table: three comparable deals from the last two seasons, all above the Rivercats' offer.",
+    whatTheySee:"The front office sees hard data suggesting their offer is below market. The analytics staff starts running their own numbers.",
+    tier:"OPEN", requiresTruth:"NONE",
+    dA:12, dU:-3, dF:5, credCost:4, backlashBase:2, delayTurns:0,
+    synergiesWith:["STATS_DROP","ANALYTICS_PRESENT"], conflictsWith:[],
+    worksWhen:"Early with strong credibility", failsWhen:"Credibility damaged; they dismiss comps as cherry-picked"
   },
   {
-    id: "PUBLIC_PRAISE",
-    name: "Praise the Organization Publicly",
-    desc: "Tell reporters Marcus loves the city and respects the franchise. Builds goodwill — but signals you might not actually leave.",
-    shortAction: "You tell a reporter: 'Marcus loves this city. He wants to be here long-term.'",
-    whatTheySee: "The front office feels reassured — but also less pressure to move quickly.",
-    beliefGoal: "Increase fairness perception, but may reduce their sense of urgency.",
-    failureMode: "They take it as a signal you're not going anywhere and slow-play the negotiation.",
-    tier: "OPEN", requiresTruth: "NONE",
-    dA: -4, dU: -8, dF: 10,
-    credCost: 2, backlashBase: 0, delayTurns: 0,
-    primaryUse: "Fairness/goodwill building",
-    worksWhen: "Paired with credible pressure later",
-    failsWhen: "Used without follow-up leverage"
+    id:"STATS_DROP", cat:"Information", name:"Drop Advanced Stats Package",
+    desc:"Email the front office a deep analytics report showing Marcus's impact. Delayed effect — they need time to process the data.",
+    shortAction:"You send a polished analytics report: plus/minus, win shares, defensive metrics, clutch splits, lineup data.",
+    whatTheySee:"Their analytics staff flags it internally: 'This guy impacts winning more than his box score shows.' The GM gets a memo next week.",
+    tier:"OPEN", requiresTruth:"NONE",
+    dA:10, dU:0, dF:4, credCost:2, backlashBase:0, delayTurns:1,
+    synergiesWith:["COMP_BRIEF","ANALYTICS_PRESENT"], conflictsWith:[],
+    worksWhen:"Round 1-3, so delayed effect lands while still negotiating", failsWhen:"Round 5 — arrives too late"
   },
   {
-    id: "MEDIA_LEAK",
-    name: "Leak Interest from Another Team",
-    desc: "Anonymously tip a reporter that another franchise reached out. Creates urgency — but if it's not true, you risk getting caught.",
-    shortAction: "A reporter tweets: 'League source says at least one Western Conference team has reached out about Marcus Chen.'",
-    whatTheySee: "The front office scrambles — are they about to lose their point guard? They speed up internal discussions.",
-    beliefGoal: "Spike urgency and alternatives perception.",
-    failureMode: "If alternatives aren't actually strong, the bluff can unravel fast.",
-    tier: "OPEN", requiresTruth: "ALT_HIGH",
-    dA: 14, dU: 10, dF: -3,
-    credCost: 8, backlashBase: 10, delayTurns: 0,
-    primaryUse: "Urgency spike",
-    worksWhen: "Alternatives are genuinely high",
-    failsWhen: "Used as a bluff with no real offers — credibility tanks"
+    id:"ANALYTICS_PRESENT", cat:"Information", name:"Request In-Person Analytics Meeting",
+    desc:"Ask to present Marcus's value case directly to the analytics department. Bold and data-driven — shows you've done your homework.",
+    shortAction:"You set up a 30-minute meeting with the Rivercats' head of analytics. You bring film clips and impact metrics.",
+    whatTheySee:"The analytics lead is impressed — this agent is serious. They send a revised valuation to the GM that night.",
+    tier:"ADVANCED", requiresTruth:"NONE",
+    dA:14, dU:-2, dF:6, credCost:5, backlashBase:3, delayTurns:0,
+    synergiesWith:["STATS_DROP","COMP_BRIEF"], conflictsWith:["MEDIA_LEAK","PUBLIC_DEMAND"],
+    worksWhen:"After data signals — builds on analytical foundation", failsWhen:"After aggressive public moves — feels like backtracking"
   },
   {
-    id: "PATIENCE_PLAY",
-    name: "Signal Patience — 'No Rush'",
-    desc: "Tell the front office you're in no hurry. If you actually have options, this is power. If you don't, it's a bluff they'll call.",
-    shortAction: "You tell their GM: 'We're comfortable taking our time. No pressure on either side.'",
-    whatTheySee: "They wonder: is this confidence or a stall? If your credibility is high, they lean toward 'confidence.'",
-    beliefGoal: "Lower urgency perception — signal you have time because you have options.",
-    failureMode: "If urgency is actually high, this looks like desperation disguised as calm.",
-    tier: "OPEN", requiresTruth: "NONE",
-    dA: 5, dU: -12, dF: 3,
-    credCost: 3, backlashBase: 1, delayTurns: 0,
-    primaryUse: "De-escalate urgency, project strength",
-    worksWhen: "Early in the process, credibility intact",
-    failsWhen: "Used late when time pressure is obvious"
+    id:"INJURY_REPORT", cat:"Information", name:"Share Marcus's Clean Medical Report",
+    desc:"Proactively send Marcus's full medical clearance. Removes a hidden objection — they can't use health concerns to justify a discount.",
+    shortAction:"You email a comprehensive medical report: zero injury history, top-5% conditioning scores, clean MRI on both knees.",
+    whatTheySee:"One of their negotiation angles just vanished. The 'injury risk discount' argument is off the table.",
+    tier:"OPEN", requiresTruth:"NONE",
+    dA:6, dU:0, dF:8, credCost:1, backlashBase:0, delayTurns:0,
+    synergiesWith:["FAIR_FRAME","COMP_BRIEF"], conflictsWith:[],
+    worksWhen:"Early — removes objections before they harden", failsWhen:"Late — they've already committed to a position"
+  },
+
+  // ======= CATEGORY: RELATIONSHIP (build trust and fairness) =======
+  {
+    id:"PUBLIC_PRAISE", cat:"Relationship", name:"Praise the Organization Publicly",
+    desc:"Tell reporters Marcus loves the city. Builds goodwill — but may signal you won't actually leave.",
+    shortAction:"You tell a beat reporter: 'Marcus loves this city. He sees himself here long-term. We just want fair value.'",
+    whatTheySee:"The front office feels reassured — the fan base is happy. But they also feel less pressure to rush.",
+    tier:"OPEN", requiresTruth:"NONE",
+    dA:-4, dU:-8, dF:10, credCost:2, backlashBase:0, delayTurns:0,
+    synergiesWith:["FAIR_FRAME","COMMUNITY_PLAY"], conflictsWith:["WALKOUT_HINT","PUBLIC_DEMAND"],
+    worksWhen:"Paired with later pressure — builds goodwill bank", failsWhen:"Used alone without leverage follow-up"
   },
   {
-    id: "FAIR_FRAME",
-    name: "Frame the Deal as Win-Win",
-    desc: "Present your ask as fair to both sides — 'Here's why this works for the Rivercats too.' Builds process fairness without aggression.",
-    shortAction: "You walk the GM through a salary structure that gives the team cap flexibility in year 3.",
-    whatTheySee: "They see a thoughtful partner, not a hostile opponent. The deal starts to feel reasonable.",
-    beliefGoal: "Boost fairness perception directly.",
-    failureMode: "If you've already been aggressive, this seems fake.",
-    tier: "OPEN", requiresTruth: "NONE",
-    dA: 2, dU: 0, dF: 14,
-    credCost: 3, backlashBase: 0, delayTurns: 0,
-    primaryUse: "Fairness anchor",
-    worksWhen: "Early or mid-process, especially after a pressure move",
-    failsWhen: "After contradictory aggressive signals"
+    id:"FAIR_FRAME", cat:"Relationship", name:"Frame the Deal as Win-Win",
+    desc:"Show how your ask helps the Rivercats too — cap flexibility, team chemistry, fan loyalty. Makes your number feel reasonable.",
+    shortAction:"You walk the GM through a salary structure that gives the team cap flexibility in year 3 and protects against the luxury tax.",
+    whatTheySee:"They see a thoughtful partner, not an adversary. The deal starts to feel reasonable — even smart for the franchise.",
+    tier:"OPEN", requiresTruth:"NONE",
+    dA:2, dU:0, dF:14, credCost:3, backlashBase:0, delayTurns:0,
+    synergiesWith:["PUBLIC_PRAISE","COMMUNITY_PLAY"], conflictsWith:["PUBLIC_DEMAND"],
+    worksWhen:"After a pressure move — softens the tone", failsWhen:"After contradictory aggressive moves — feels fake"
   },
   {
-    id: "WALKOUT_HINT",
-    name: "Hint at Walking Away",
-    desc: "Casually mention that Marcus has been 'looking at houses in other cities.' Strong signal — but burns credibility if your walk-away isn't real.",
-    shortAction: "At lunch with the assistant GM, you casually mention Marcus toured a house in Miami last weekend.",
-    whatTheySee: "Alarm bells. Is he actually leaving? They start gaming out what losing him would cost.",
-    beliefGoal: "Spike alternatives and urgency.",
-    failureMode: "If walk-away power isn't actually strong, they call the bluff and you look desperate.",
-    tier: "OPEN", requiresTruth: "WALK_HIGH",
-    dA: 15, dU: 8, dF: -5,
-    credCost: 10, backlashBase: 12, delayTurns: 0,
-    primaryUse: "Strong pressure play",
-    worksWhen: "Walk-away is genuinely strong",
-    failsWhen: "Walk-away is weak — becomes an empty threat"
+    id:"COMMUNITY_PLAY", cat:"Relationship", name:"Marcus Does Community Event",
+    desc:"Marcus hosts a youth basketball camp. Fans love him. The front office feels public pressure to keep their star happy.",
+    shortAction:"Marcus runs a free basketball camp for 200 local kids. Local news covers it. #KeepMarcus trends on Twitter.",
+    whatTheySee:"PR gold. The front office sees fan loyalty building — losing Marcus now would be a PR disaster. But no direct leverage.",
+    tier:"OPEN", requiresTruth:"NONE",
+    dA:0, dU:3, dF:11, credCost:1, backlashBase:0, delayTurns:1,
+    synergiesWith:["PUBLIC_PRAISE","FAIR_FRAME"], conflictsWith:["SOCIAL_SILENCE"],
+    worksWhen:"Early — delayed goodwill compounds", failsWhen:"Combined with social media silence — contradicts the 'happy player' image"
   },
   {
-    id: "STATS_DROP",
-    name: "Drop Advanced Stats Package",
-    desc: "Email the front office a deep analytics breakdown showing Marcus's impact beyond box scores. Subtle — builds value without making demands.",
-    shortAction: "You send a polished 4-page analytics report: plus/minus, win shares, defensive metrics, clutch performance.",
-    whatTheySee: "The analytics staff nods — this confirms what they already suspected. The GM starts to feel the market will value Marcus too.",
-    beliefGoal: "Quietly strengthen alternatives — other teams would pay for this production.",
-    failureMode: "Delayed impact — they need time to process the data.",
-    tier: "OPEN", requiresTruth: "NONE",
-    dA: 10, dU: 0, dF: 4,
-    credCost: 2, backlashBase: 0, delayTurns: 1,
-    primaryUse: "Build alternatives perception with evidence",
-    worksWhen: "Used in Round 1 so the delayed effect lands in Round 2",
-    failsWhen: "Used in Round 3 — effect arrives too late to matter"
+    id:"PRIVATE_DINNER", cat:"Relationship", name:"Invite GM to Private Dinner",
+    desc:"Take GM Derek Walsh to dinner. No agenda. Build personal rapport. People make better deals with people they like.",
+    shortAction:"You take Derek to a quiet steakhouse. No spreadsheets. You talk about his kids, the upcoming draft, the new arena plans.",
+    whatTheySee:"Derek relaxes. You're not just some agent — you're someone he can work with. He wants to find a deal that works.",
+    tier:"ADVANCED", requiresTruth:"NONE",
+    dA:0, dU:-3, dF:12, credCost:2, backlashBase:-3, delayTurns:0,
+    synergiesWith:["FAIR_FRAME","PATIENCE_PLAY"], conflictsWith:["OWNER_MEETING","PUBLIC_DEMAND"],
+    worksWhen:"Before pressure moves — banks goodwill", failsWhen:"After going over his head — he's already hostile"
   },
-  // --- TIER: RESTRICTED (requires high cred, low backlash) ---
+
+  // ======= CATEGORY: PRESSURE (create urgency and BATNA perception) =======
   {
-    id: "DEADLINE_SET",
-    name: "Set a Hard Deadline",
-    desc: "Tell the front office: 'We need an answer by Friday or we explore the open market.' Maximum pressure — but only works if everything else supports it.",
-    shortAction: "You call the GM directly: 'We've been patient. We need a number by end of week.'",
-    whatTheySee: "The GM's stomach drops. This is real pressure — but only if they believe you'll actually walk.",
-    beliefGoal: "Force urgency. Everything accelerates.",
-    failureMode: "If your credibility is damaged or alternatives seem fake, they call the bluff and let Friday pass.",
-    tier: "RESTRICTED", requiresTruth: "NONE",
-    dA: 6, dU: 16, dF: -6,
-    credCost: 12, backlashBase: 14, delayTurns: 0,
-    primaryUse: "Endgame pressure",
-    worksWhen: "Credibility > 75, alternatives are believed, backlash is low",
-    failsWhen: "Used too early or with damaged credibility"
+    id:"MEDIA_LEAK", cat:"Pressure", name:"Leak Interest from Another Team",
+    desc:"Anonymously tip a reporter that another franchise reached out. Spikes urgency — but if alternatives aren't real, you'll get caught.",
+    shortAction:"A reporter tweets: 'League source says at least one Western Conference team has reached out about Marcus Chen's availability.'",
+    whatTheySee:"The front office scrambles. Are they about to lose their point guard? They speed up internal discussions.",
+    tier:"OPEN", requiresTruth:"ALT_HIGH",
+    dA:14, dU:10, dF:-3, credCost:8, backlashBase:10, delayTurns:0,
+    synergiesWith:["WALKOUT_HINT","DEADLINE_SET"], conflictsWith:["PUBLIC_PRAISE","PATIENCE_PLAY"],
+    worksWhen:"Alternatives are genuinely HIGH", failsWhen:"Alternatives are LOW/MED — bluff unravels, credibility tanks"
   },
   {
-    id: "OWNER_MEETING",
-    name: "Request Meeting with the Owner",
-    desc: "Go over the GM's head and ask to meet the team owner directly. Power move — but the GM may feel disrespected.",
-    shortAction: "You request a sit-down with the Rivercats' owner, bypassing the GM entirely.",
-    whatTheySee: "The owner is intrigued. The GM is furious. The power dynamic shifts — but so does the backlash risk.",
-    beliefGoal: "Signal that you're serious enough to escalate. Boosts alternatives perception.",
-    failureMode: "The GM retaliates by slowing everything down. Backlash spikes.",
-    tier: "RESTRICTED", requiresTruth: "NONE",
-    dA: 10, dU: 5, dF: -8,
-    credCost: 8, backlashBase: 16, delayTurns: 0,
-    primaryUse: "Escalation play",
-    worksWhen: "GM is stalling and you have credibility to burn",
-    failsWhen: "Used without strong position — looks like desperation"
+    id:"PATIENCE_PLAY", cat:"Pressure", name:"Signal Patience &mdash; 'No Rush'",
+    desc:"Tell the front office you're in no hurry. If you have options, this is power. If you don't, they'll call the bluff.",
+    shortAction:"You tell their GM: 'We're comfortable taking our time. No pressure on either side. Let's find the right deal.'",
+    whatTheySee:"They wonder: is this confidence or a stall? If your credibility is high, they lean toward confidence.",
+    tier:"OPEN", requiresTruth:"NONE",
+    dA:5, dU:-12, dF:3, credCost:3, backlashBase:1, delayTurns:0,
+    synergiesWith:["COMP_BRIEF","STATS_DROP","PRIVATE_DINNER"], conflictsWith:["MEDIA_LEAK","DEADLINE_SET","WALKOUT_HINT"],
+    worksWhen:"Early, credibility intact", failsWhen:"Late when time pressure is obvious"
   },
   {
-    id: "SOCIAL_SILENCE",
-    name: "Marcus Goes Silent on Social Media",
-    desc: "Marcus stops posting about the Rivercats entirely. Fans notice. The front office notices. Subtle — but sends a loud signal.",
-    shortAction: "Marcus hasn't posted anything about the team in 10 days. Fans are speculating. Sports talk radio is buzzing.",
-    whatTheySee: "The front office PR team flags it. 'He's distancing himself.' Urgency quietly builds.",
-    beliefGoal: "Create ambient urgency without direct confrontation.",
-    failureMode: "If overused alongside aggressive moves, it looks petty instead of strategic.",
-    tier: "RESTRICTED", requiresTruth: "NONE",
-    dA: 4, dU: 10, dF: 0,
-    credCost: 5, backlashBase: 6, delayTurns: 1,
-    primaryUse: "Ambient pressure builder",
-    worksWhen: "Paired with patience — looks like quiet confidence",
-    failsWhen: "Used after aggressive moves — looks childish"
+    id:"WALKOUT_HINT", cat:"Pressure", name:"Hint at Walking Away",
+    desc:"Casually mention Marcus was 'looking at houses in another city.' Nuclear signal — burns credibility if walk-away isn't real.",
+    shortAction:"At lunch with the assistant GM, you casually mention Marcus toured a house in Miami last weekend.",
+    whatTheySee:"Alarm bells. Is he actually leaving? They start gaming out what losing him would cost. Fan backlash. Draft capital. Revenue loss.",
+    tier:"OPEN", requiresTruth:"WALK_HIGH",
+    dA:15, dU:8, dF:-5, credCost:10, backlashBase:12, delayTurns:0,
+    synergiesWith:["MEDIA_LEAK","DEADLINE_SET"], conflictsWith:["PUBLIC_PRAISE","COMMUNITY_PLAY"],
+    worksWhen:"Walk-away is genuinely HIGH", failsWhen:"Walk-away is LOW — empty threat, credibility destroyed"
+  },
+  {
+    id:"WORKOUT_VIDEO", cat:"Pressure", name:"Post Marcus's Off-Season Workout",
+    desc:"Marcus posts a highlight reel of his summer workouts. He looks faster, stronger. Other teams notice. Subtle external pressure.",
+    shortAction:"Marcus posts a 90-second workout video. Crossovers, step-backs, explosive drives. It goes viral. Other agents start calling.",
+    whatTheySee:"The video gets 2M views. Rival GMs are DMing their scouts. The Rivercats feel the market heating up.",
+    tier:"OPEN", requiresTruth:"NONE",
+    dA:8, dU:5, dF:0, credCost:1, backlashBase:3, delayTurns:0,
+    synergiesWith:["MEDIA_LEAK","STATS_DROP"], conflictsWith:["SOCIAL_SILENCE"],
+    worksWhen:"Builds ambient pressure without direct confrontation", failsWhen:"Paired with social silence — contradictory messaging"
+  },
+  {
+    id:"THIRD_PARTY_BUZZ", cat:"Pressure", name:"Get an ESPN Analyst to Talk Up Marcus",
+    desc:"Call in a favor from a media contact. An analyst does a segment on 'most undervalued' players. Marcus is mentioned.",
+    shortAction:"An ESPN analyst does a 3-minute segment: 'Marcus Chen is the most underpaid player in the league. Someone's going to pay him.'",
+    whatTheySee:"The front office watches the segment. Twitter is lighting up. The narrative is forming: if they lowball Marcus, they look foolish.",
+    tier:"ADVANCED", requiresTruth:"NONE",
+    dA:9, dU:6, dF:-2, credCost:5, backlashBase:5, delayTurns:0,
+    synergiesWith:["COMP_BRIEF","WORKOUT_VIDEO"], conflictsWith:["PATIENCE_PLAY"],
+    worksWhen:"Mid-negotiation when alternatives narrative is building", failsWhen:"Too early — seems manufactured"
+  },
+
+  // ======= CATEGORY: STRATEGIC (timing plays, reframes, concessions) =======
+  {
+    id:"ANCHOR_HIGH", cat:"Strategic", name:"Open with an Aggressive Number",
+    desc:"Name a number well above market rate. Anchors the entire negotiation higher. But too aggressive and they stop taking you seriously.",
+    shortAction:"You open with a number 20% above the expected market rate. 'This is what Marcus is worth. The data backs it up.'",
+    whatTheySee:"The GM laughs. Then stops laughing. Then asks to see your data. The anchor is set — every counter-offer will reference your number.",
+    tier:"OPEN", requiresTruth:"NONE",
+    dA:8, dU:4, dF:-6, credCost:6, backlashBase:7, delayTurns:0,
+    synergiesWith:["COMP_BRIEF","STRATEGIC_CONCESSION"], conflictsWith:["FAIR_FRAME"],
+    worksWhen:"Round 1-2 with data to back it up", failsWhen:"Without supporting evidence — just looks unreasonable"
+  },
+  {
+    id:"STRATEGIC_CONCESSION", cat:"Strategic", name:"Make a Calculated Concession",
+    desc:"Give up something small but visible: a no-trade clause, a reporting date. Signals good faith. Makes your firm asks feel more reasonable.",
+    shortAction:"You tell the GM: 'We'll drop the no-trade clause. Marcus trusts this organization. But the number stays.'",
+    whatTheySee:"Relief. You're reasonable after all. They reciprocate — the negotiation unsticks. But your core ask is now harder to push back on.",
+    tier:"ADVANCED", requiresTruth:"NONE",
+    dA:3, dU:-2, dF:13, credCost:2, backlashBase:-4, delayTurns:0,
+    synergiesWith:["ANCHOR_HIGH","DEADLINE_SET","FAIR_FRAME"], conflictsWith:[],
+    worksWhen:"After a high anchor or pressure play — releases tension", failsWhen:"Without prior pressure — gives away value for free"
+  },
+  {
+    id:"REFRAME_ROLE", cat:"Strategic", name:"Reframe Marcus's Role",
+    desc:"Shift the conversation from 'what he costs' to 'what he's worth.' Position Marcus as the franchise cornerstone, not just a line item.",
+    shortAction:"You present a 'franchise impact' case: jersey sales, season ticket renewals, playoff revenue, national TV appearances.",
+    whatTheySee:"The GM pauses. He's been thinking about Marcus as a salary cap number. Now he's thinking about Marcus as a revenue engine.",
+    tier:"OPEN", requiresTruth:"NONE",
+    dA:7, dU:0, dF:8, credCost:3, backlashBase:1, delayTurns:0,
+    synergiesWith:["STATS_DROP","FAIR_FRAME","COMMUNITY_PLAY"], conflictsWith:[],
+    worksWhen:"Mid-negotiation — shifts the frame after positions are set", failsWhen:"Too early when the frame hasn't been established yet"
+  },
+  {
+    id:"TRIAL_BALLOON", cat:"Strategic", name:"Float a Trial Balloon",
+    desc:"Suggest a creative deal structure 'just as an idea' — partial guarantee, incentive bonuses, team option. Tests their flexibility without committing.",
+    shortAction:"You say: 'What if we structured it with a lower base but performance bonuses? Just thinking out loud.'",
+    whatTheySee:"The GM leans in. He likes creative. This feels like problem-solving, not posturing. But he's also mapping your flexibility.",
+    tier:"OPEN", requiresTruth:"NONE",
+    dA:0, dU:-4, dF:9, credCost:2, backlashBase:0, delayTurns:0,
+    synergiesWith:["FAIR_FRAME","PRIVATE_DINNER","STRATEGIC_CONCESSION"], conflictsWith:["DEADLINE_SET"],
+    worksWhen:"Mid-process — creates collaborative momentum", failsWhen:"After a hard deadline — undercuts your urgency"
+  },
+  {
+    id:"SILENCE_PLAY", cat:"Strategic", name:"Go Silent for a Few Days",
+    desc:"Stop calling. Stop emailing. Let them wonder. In negotiation, the person who speaks first after a silence usually concedes.",
+    shortAction:"You don't call for 4 days. No emails. No texts. Radio silence.",
+    whatTheySee:"Day 1: relief. Day 2: curiosity. Day 3: anxiety. Day 4: the GM calls YOU. 'Hey, just checking in...'",
+    tier:"OPEN", requiresTruth:"NONE",
+    dA:4, dU:6, dF:0, credCost:2, backlashBase:2, delayTurns:1,
+    synergiesWith:["PATIENCE_PLAY","WALKOUT_HINT"], conflictsWith:["COMMUNITY_PLAY","PUBLIC_PRAISE"],
+    worksWhen:"After establishing alternatives — silence implies options", failsWhen:"Early without context — just looks disorganized"
+  },
+
+  // ======= CATEGORY: RESTRICTED (high-cred, low-backlash only) =======
+  {
+    id:"DEADLINE_SET", cat:"Pressure", name:"Set a Hard Deadline",
+    desc:"'We need an answer by Friday or we explore the open market.' Maximum pressure. Only works if everything else supports it.",
+    shortAction:"You call the GM: 'Derek, we've been patient. We need a number by end of week. If not, we're taking meetings.'",
+    whatTheySee:"The GM's stomach drops. This is real. But only if they believe your alternatives are real and your credibility is intact.",
+    tier:"RESTRICTED", requiresTruth:"NONE",
+    dA:6, dU:16, dF:-6, credCost:12, backlashBase:14, delayTurns:0,
+    synergiesWith:["MEDIA_LEAK","WALKOUT_HINT","COMP_BRIEF"], conflictsWith:["PATIENCE_PLAY","TRIAL_BALLOON"],
+    worksWhen:"Late game, credibility >75, backlash <40", failsWhen:"Early or with damaged credibility — bluff gets called"
+  },
+  {
+    id:"OWNER_MEETING", cat:"Relationship", name:"Request Meeting with the Owner",
+    desc:"Go over the GM's head. Power move — but the GM will feel disrespected. High risk, high reward.",
+    shortAction:"You contact the Rivercats' owner's office directly: 'We'd like 15 minutes. This is about the future of the franchise.'",
+    whatTheySee:"The owner takes the meeting. The GM is furious. Power shifts — but the backlash is real.",
+    tier:"RESTRICTED", requiresTruth:"NONE",
+    dA:10, dU:5, dF:-8, credCost:8, backlashBase:16, delayTurns:0,
+    synergiesWith:["REFRAME_ROLE","COMP_BRIEF"], conflictsWith:["PRIVATE_DINNER","FAIR_FRAME"],
+    worksWhen:"GM is stalling and you have credibility to spend", failsWhen:"Without strong position — looks desperate"
+  },
+  {
+    id:"SOCIAL_SILENCE", cat:"Pressure", name:"Marcus Goes Silent on Social Media",
+    desc:"Marcus stops posting about the Rivercats. Fans notice. Sports radio notices. Quiet signal, loud impact.",
+    shortAction:"Marcus hasn't posted about the team in 12 days. His last post is a beach photo with no caption. Fans are losing it.",
+    whatTheySee:"The PR team flags it. 'He's distancing himself.' The owner asks the GM: 'Is this deal getting done or not?'",
+    tier:"RESTRICTED", requiresTruth:"NONE",
+    dA:4, dU:10, dF:0, credCost:5, backlashBase:6, delayTurns:1,
+    synergiesWith:["PATIENCE_PLAY","SILENCE_PLAY"], conflictsWith:["COMMUNITY_PLAY","WORKOUT_VIDEO","PUBLIC_PRAISE"],
+    worksWhen:"Paired with patience — looks like quiet confidence", failsWhen:"After community events — contradicts happy player image"
+  },
+  {
+    id:"PUBLIC_DEMAND", cat:"Pressure", name:"Go Public with Your Ask",
+    desc:"Tell reporters exactly what you're asking for. Forces the front office to respond publicly. Nuclear option — massive backlash risk.",
+    shortAction:"You go on a podcast: 'We've asked for $28M per year. The Rivercats have offered $20M. Marcus deserves market value.'",
+    whatTheySee:"The front office is blindsided. Fans are split. The negotiation is now public theater. The GM is furious.",
+    tier:"RESTRICTED", requiresTruth:"NONE",
+    dA:12, dU:14, dF:-10, credCost:14, backlashBase:18, delayTurns:0,
+    synergiesWith:["COMP_BRIEF"], conflictsWith:["PRIVATE_DINNER","FAIR_FRAME","PUBLIC_PRAISE","COMMUNITY_PLAY"],
+    worksWhen:"When all else has failed and you need to force action", failsWhen:"Early or without public support — looks like a tantrum"
+  },
+
+  // ======= CATEGORY: ELITE (requires 85+ cred, <25 backlash) =======
+  {
+    id:"MULTI_TEAM_MEETING", cat:"Strategic", name:"Arrange Visits with Other Teams",
+    desc:"Set up formal meetings with 2-3 other franchises. The Rivercats will hear about it within hours. Maximum leverage — but maximum cost.",
+    shortAction:"Marcus flies to Miami Monday, Dallas Tuesday, and Golden State Wednesday. Every beat reporter in the league tweets it.",
+    whatTheySee:"Panic. The Rivercats are about to lose their franchise player. The owner calls an emergency meeting with the GM.",
+    tier:"ELITE", requiresTruth:"ALT_HIGH",
+    dA:18, dU:14, dF:-4, credCost:10, backlashBase:8, delayTurns:0,
+    synergiesWith:["DEADLINE_SET","MEDIA_LEAK"], conflictsWith:["PATIENCE_PLAY","PUBLIC_PRAISE"],
+    worksWhen:"Alternatives are genuinely HIGH and you've built credibility", failsWhen:"Without real options — gets exposed immediately"
   }
 ];
 
 // ============================================================
-//  TURN-SPECIFIC PROMPTS (contextual narrative per round)
+//  TURN PROMPTS (5 rounds)
 // ============================================================
 const TURN_PROMPTS = [
   {
-    title: "Round 1 of 3 — Opening Move",
-    prompt: "It's your first meeting week with the Rivercats front office. Marcus is watching — he trusts you to set the right tone. The front office is relaxed, thinking they have all the leverage. What signal do you send first?"
+    title: "Round 1 of 5 &mdash; First Impression",
+    prompt: "It's your first week on the case. You've studied the Rivercats' cap situation, scouted Marcus's market value, and booked your first meetings. The front office is relaxed — they think time is on their side. What tone do you set?",
+    tip: "Round 1 is about establishing your credibility and setting the frame. Most elite agents don't lead with pressure — they lead with information."
   },
   {
-    title: "Round 2 of 3 — Mid-Negotiation",
-    prompt: "The front office has had time to react to your first move. They're recalculating. This is where most negotiations are won or lost — your second signal either builds on the first or contradicts it. Choose carefully."
+    title: "Round 2 of 5 &mdash; Building Position",
+    prompt: "The front office has absorbed your opening move. They're recalibrating. This round is about reinforcing the story you started telling — or pivoting if you need to. Consistency builds belief; contradictions destroy it.",
+    tip: "Watch for synergies. Two signals that tell the same story are more powerful than two unrelated strong moves."
   },
   {
-    title: "Round 3 of 3 — Closing Move",
-    prompt: "This is it. Your final signal before the front office makes their decision. Everything you've built — credibility, alternatives perception, urgency — comes down to this move. What's your closer?"
+    title: "Round 3 of 5 &mdash; The Pivot Point",
+    prompt: "This is the middle of the negotiation — where most deals are won or lost. The front office has a read on your strategy. Do you stay the course, escalate, or change direction? Pay attention to the GM's mood and your momentum.",
+    tip: "If your momentum is positive, build on it. If the GM is getting hostile, consider a relationship move to reduce backlash before escalating."
+  },
+  {
+    title: "Round 4 of 5 &mdash; Pressure Phase",
+    prompt: "The clock is ticking. The front office knows you're approaching endgame. This is where credibility either pays off or falls short. The signals you've already sent determine what's available to you now.",
+    tip: "Restricted and Elite signals unlock based on your credibility and backlash. If you've managed resources well, this is where power moves become available."
+  },
+  {
+    title: "Round 5 of 5 &mdash; The Close",
+    prompt: "Final round. Everything you've built comes down to this. The front office is making their final decision based on what they believe about your alternatives, urgency, and fairness. Send the signal that seals the deal.",
+    tip: "The best closers don't always end with the biggest move. Sometimes a well-timed concession after sustained pressure is more effective than another hammer blow."
+  }
+];
+
+// ============================================================
+//  OPPONENT REACTIONS (GM Derek Walsh)
+// ============================================================
+const GM_REACTIONS = {
+  calm: [
+    "Derek leans back in his chair, nodding slowly. 'We're happy to keep talking. No rush on our end either.'",
+    "The GM seems relaxed. His assistant sends over a meeting invite for next week. Standard pace.",
+    "Derek sends a friendly email: 'Good meeting today. Let's keep this moving. I think we can find something that works.'"
+  ],
+  interested: [
+    "Derek calls you back within an hour. That never happens. 'Let's set up another meeting this week.'",
+    "The assistant GM pulls you aside: 'Between us — Derek's taking this more seriously now. You've got his attention.'",
+    "Derek mentions your conversation in a press conference: 'We're committed to keeping our core together. Working hard on it.'"
+  ],
+  nervous: [
+    "Derek's office calls three times in one day. His assistant sounds stressed. 'The GM wants to know if you're free tomorrow.'",
+    "A reporter texts you: 'Heard the Rivercats are scrambling on the Marcus deal. Any comment?' Word is spreading.",
+    "Derek shows up to your next meeting with the team's salary cap analyst. He brought backup. That means he's worried."
+  ],
+  hostile: [
+    "Derek's tone shifts. 'Look, we've been more than fair. Don't push this.' He's not smiling anymore.",
+    "The Rivercats' PR team puts out a statement: 'We value Marcus and have made a competitive offer.' Translation: they're framing you as unreasonable.",
+    "Derek cancels your next meeting. His assistant says he's 'busy with draft prep.' You're being frozen out."
+  ],
+  panicked: [
+    "The team owner calls you directly. 'What's it going to take? Tell me the number.' Derek has been bypassed.",
+    "Derek sends a new offer at 11pm. It's significantly higher. He's not sleeping.",
+    "Multiple reporters are calling: 'Is it true Marcus is leaving?' The Rivercats' social media is flooded with #KeepMarcus."
+  ]
+};
+
+// ============================================================
+//  NEWS EVENTS (random mid-game disruptions)
+// ============================================================
+const NEWS_EVENTS = [
+  {
+    id:"RIVAL_SIGNS", trigger:"round3",
+    title:"BREAKING: Comparable Player Signs Massive Deal",
+    text:"Jaylen Torres — a point guard with similar stats to Marcus — just signed a 4-year, $120M extension with Dallas. The market just moved in your favor.",
+    effect: { dA: 6, dU: 3, dF: 0 },
+    narrative: "The Torres deal just reset the market. The Rivercats can't pretend $20M/year is competitive anymore."
+  },
+  {
+    id:"COACH_QUOTE", trigger:"round2",
+    title:"Coach Martin: 'Marcus Is Our Future'",
+    text:"In a postgame interview, Head Coach Ray Martin says: 'Everything we're building runs through Marcus. He's the engine.' The front office didn't clear this quote.",
+    effect: { dA: 0, dU: 2, dF: 5 },
+    narrative: "The coach just did your job for you. When the coach publicly says a player is untouchable, lowballing gets harder."
+  },
+  {
+    id:"CAP_SPIKE", trigger:"round4",
+    title:"REPORT: Salary Cap Projected to Jump 12% Next Season",
+    text:"The NBA projects a major cap increase tied to the new media deal. Teams will have more money to spend — including teams that might want Marcus.",
+    effect: { dA: 5, dU: 4, dF: 0 },
+    narrative: "A rising cap means more teams can afford Marcus. The Rivercats' window to lock him in at a 'discount' just closed."
+  },
+  {
+    id:"INJURY_SCARE", trigger:"round3",
+    title:"Marcus Tweaks Ankle in Pickup Game",
+    text:"Marcus rolls his ankle in a summer league pickup game. X-rays are negative — he's fine. But the 24-hour news cycle already ran the story.",
+    effect: { dA: -4, dU: 0, dF: -3 },
+    narrative: "Even though Marcus is fine, the front office now has an excuse to bring up 'durability concerns.' A temporary setback."
+  },
+  {
+    id:"TRADE_RUMOR", trigger:"round4",
+    title:"RUMOR: Eastern Conference Team Exploring Sign-and-Trade",
+    text:"An ESPN reporter says a 'competitive Eastern Conference team' has explored sign-and-trade scenarios involving Marcus. The Rivercats haven't confirmed.",
+    effect: { dA: 7, dU: 5, dF: -2 },
+    narrative: "Whether or not this is real, the perception of competition just intensified. The Rivercats are running out of time."
   }
 ];
 
 // ============================================================
 //  GAME STATE
 // ============================================================
+const TOTAL_ROUNDS = 5;
 let STATE = {
-  name: "",
-  email: "",
-  seed: 0,
-  phase: "SETUP", // SETUP, TURN1, TURN2, TURN3, RESOLVED
-
-  trueState: { alt: "LOW", urg: "LOW", walk: "LOW", repSens: "LOW" },
-
-  belief: { A: 50, U: 50, F: 50, credibility: 100, backlash: 0 },
-  flagPatient: false,
-  flagUrgent: false,
+  name:"", email:"", seed:0, phase:"SETUP",
+  trueState: { alt:"LOW", urg:"LOW", walk:"LOW", repSens:"LOW", gmPersonality:"BALANCED" },
+  belief: { A:50, U:50, F:50, credibility:100, backlash:0 },
+  flagPatient:false, flagUrgent:false,
   delayQueue: [],
-  slotsApplied: [false, false, false],
   selectedSignalId: null,
   turn: 1,
-
-  receipts: [] // { turn, signalId, pre, post, flagsTriggered }
+  momentum: 0, // -100 to +100
+  receipts: [],
+  usedSignalIds: new Set(),
+  activeCategory: "ALL",
+  newsEventsShown: new Set(),
+  gmMood: "calm", // calm, interested, nervous, hostile, panicked
+  synergyBonusesEarned: 0,
+  contradictionPenalties: 0
 };
 
 // ============================================================
-//  UTILITY FUNCTIONS
+//  UTILITIES
 // ============================================================
-function clamp(v, min = 0, max = 100) {
-  const n = Number(v);
-  return isNaN(n) ? min : Math.min(max, Math.max(min, n));
+function clamp(v, lo=0, hi=100) { const n=Number(v); return isNaN(n)?lo:Math.min(hi,Math.max(lo,n)); }
+function hashSeed(e) { let h=0; for(let i=0;i<e.length;i++){h=(h<<5)-h+e.charCodeAt(i);h|=0;} return Math.abs(h); }
+function seededPick(s,a) { return a[s%a.length]; }
+function seededNoise(s,p) { const m=Math.round(p*100),n=(s*9301+49297)%233280; return Math.round((n/233280*2-1)*m); }
+function seededRandom(s) { return ((s*9301+49297)%233280)/233280; }
+function bandLabel(v) { const n=Number(v||0); return n>=70?"HIGH":n>=40?"MID":"LOW"; }
+function credLabel(v) { const n=Number(v||0); return n>=75?"GREEN":n>=50?"YELLOW":"RED"; }
+function backlashLabel(v) { const n=Number(v||0); return n>=55?"CRISIS":n>=25?"RISING":"LOW"; }
+function credScale(c) { return 0.55+0.45*(clamp(c,0,100)/100); }
+function repMultiplier() { const r=STATE.trueState.repSens.toUpperCase(); return r==="HIGH"?1.5:r==="MED"?1.2:1.0; }
+function meterColor(v) { return v>=70?"#22c55e":v>=40?"#eab308":"#ef4444"; }
+function credColor(v) { return v>=75?"#22c55e":v>=50?"#eab308":"#ef4444"; }
+function backlashColor(v) { return v>=55?"#ef4444":v>=25?"#eab308":"#22c55e"; }
+function momentumColor(m) { return m>=30?"#22c55e":m>=10?"#4ade80":m<=-30?"#ef4444":m<=-10?"#f87171":"#eab308"; }
+function momentumLabel(m) { return m>=40?"Dominant":m>=20?"Strong":m>=5?"Building":m<=-40?"Collapsing":m<=-20?"Losing Ground":m<=-5?"Slipping":"Neutral"; }
+
+function pickRandom(seed, arr) { return arr[Math.floor(seededRandom(seed) * arr.length)]; }
+
+// ============================================================
+//  SYNERGY & CONFLICT DETECTION
+// ============================================================
+function checkSynergy(signalId) {
+  const sig = CATALOG.find(s=>s.id===signalId);
+  if(!sig || !sig.synergiesWith) return [];
+  return sig.synergiesWith.filter(id => STATE.usedSignalIds.has(id));
 }
 
-function hashSeed(email) {
-  let h = 0;
-  for (let i = 0; i < email.length; i++) {
-    h = (h << 5) - h + email.charCodeAt(i);
-    h |= 0;
-  }
-  return Math.abs(h);
+function checkConflict(signalId) {
+  const sig = CATALOG.find(s=>s.id===signalId);
+  if(!sig || !sig.conflictsWith) return [];
+  return sig.conflictsWith.filter(id => STATE.usedSignalIds.has(id));
 }
 
-function seededPick(seed, arr) { return arr[seed % arr.length]; }
-
-function seededNoise(seed, pct) {
-  const max = Math.round(pct * 100);
-  const n = (seed * 9301 + 49297) % 233280;
-  const r = n / 233280;
-  return Math.round((r * 2 - 1) * max);
+function getSynergyBonus(synergies) {
+  if(synergies.length === 0) return 0;
+  if(synergies.length === 1) return 4;
+  if(synergies.length === 2) return 7;
+  return 10;
 }
 
-function bandLabel(v) {
-  const n = Number(v || 0);
-  if (n >= 70) return "HIGH";
-  if (n >= 40) return "MID";
-  return "LOW";
-}
-
-function credLabel(v) {
-  const n = Number(v || 0);
-  if (n >= 75) return "GREEN";
-  if (n >= 50) return "YELLOW";
-  return "RED";
-}
-
-function backlashLabel(v) {
-  const n = Number(v || 0);
-  if (n >= 55) return "CRISIS";
-  if (n >= 25) return "RISING";
-  return "LOW";
-}
-
-function credScale(cred) {
-  const c = clamp(cred, 0, 100) / 100;
-  return 0.55 + 0.45 * c;
-}
-
-function repMultiplier() {
-  const r = STATE.trueState.repSens.toUpperCase();
-  if (r === "HIGH") return 1.5;
-  if (r === "MED") return 1.2;
-  return 1.0;
+function getConflictPenalty(conflicts) {
+  if(conflicts.length === 0) return 0;
+  if(conflicts.length === 1) return 6;
+  return 12;
 }
 
 // ============================================================
-//  GAME INITIALIZATION
+//  GM MOOD ENGINE
+// ============================================================
+function updateGmMood() {
+  const b = STATE.belief;
+  const backlash = b.backlash;
+  const momentum = STATE.momentum;
+
+  if(backlash >= 50) { STATE.gmMood = "hostile"; return; }
+  if(b.A >= 70 && b.U >= 60) { STATE.gmMood = "panicked"; return; }
+  if(b.A >= 60 && b.U >= 50) { STATE.gmMood = "nervous"; return; }
+  if(backlash >= 30) { STATE.gmMood = "hostile"; return; }
+  if(momentum >= 15) { STATE.gmMood = "interested"; return; }
+  STATE.gmMood = "calm";
+}
+
+function renderOpponentReaction() {
+  const box = document.getElementById("opponentBox");
+  const reactions = GM_REACTIONS[STATE.gmMood] || GM_REACTIONS.calm;
+  const reaction = pickRandom(STATE.seed + STATE.turn * 77, reactions);
+
+  const moodColors = {
+    calm: { bg:"rgba(148,163,184,0.1)", border:"var(--text-dim)", text:"Relaxed" },
+    interested: { bg:"rgba(59,130,246,0.1)", border:"var(--accent)", text:"Engaged" },
+    nervous: { bg:"rgba(234,179,8,0.1)", border:"var(--gold)", text:"Nervous" },
+    hostile: { bg:"rgba(239,68,68,0.1)", border:"var(--red)", text:"Hostile" },
+    panicked: { bg:"rgba(167,139,250,0.1)", border:"var(--purple)", text:"Panicking" }
+  };
+  const mc = moodColors[STATE.gmMood] || moodColors.calm;
+
+  document.getElementById("opponentText").textContent = reaction;
+  const mood = document.getElementById("opponentMood");
+  mood.textContent = "GM Mood: " + mc.text;
+  mood.style.background = mc.bg;
+  mood.style.color = mc.border;
+  mood.style.border = `1px solid ${mc.border}`;
+  box.classList.add("visible");
+}
+
+// ============================================================
+//  NEWS EVENTS ENGINE
+// ============================================================
+function checkNewsEvents() {
+  const roundKey = "round" + STATE.turn;
+  const eligible = NEWS_EVENTS.filter(e =>
+    e.trigger === roundKey && !STATE.newsEventsShown.has(e.id)
+  );
+
+  // Use seed to deterministically pick whether an event fires (70% chance)
+  const eventSeed = STATE.seed + STATE.turn * 137;
+  if(seededRandom(eventSeed) > 0.7 || eligible.length === 0) return null;
+
+  const event = eligible[Math.floor(seededRandom(eventSeed + 1) * eligible.length)];
+  STATE.newsEventsShown.add(event.id);
+
+  // Apply effect
+  STATE.belief.A = clamp(STATE.belief.A + event.effect.dA);
+  STATE.belief.U = clamp(STATE.belief.U + event.effect.dU);
+  STATE.belief.F = clamp(STATE.belief.F + event.effect.dF);
+
+  return event;
+}
+
+function renderNewsEvent(event) {
+  if(!event) { document.getElementById("newsEvent").classList.remove("visible"); return; }
+  document.getElementById("newsTitle").textContent = event.title;
+  document.getElementById("newsText").innerHTML = event.text + `<br/><em style="color:var(--gold);">${event.narrative}</em>`;
+  document.getElementById("newsEvent").classList.add("visible");
+}
+
+// ============================================================
+//  START GAME
 // ============================================================
 function startGame() {
   const name = document.getElementById("nameInput").value.trim();
   const email = document.getElementById("emailInput").value.trim().toLowerCase();
-  const errEl = document.getElementById("setupError");
+  const err = document.getElementById("setupError");
 
-  if (name.split(" ").filter(Boolean).length < 2) {
-    errEl.textContent = "Please enter your first and last name.";
-    errEl.style.display = "block";
-    return;
-  }
-  if (!email.includes("@") || !email.includes(".")) {
-    errEl.textContent = "Please enter a valid email address.";
-    errEl.style.display = "block";
-    return;
-  }
+  if(name.split(" ").filter(Boolean).length<2) { err.textContent="Enter first and last name."; err.style.display="block"; return; }
+  if(!email.includes("@")||!email.includes(".")) { err.textContent="Enter a valid email."; err.style.display="block"; return; }
 
-  STATE.name = name;
-  STATE.email = email;
-  STATE.seed = hashSeed(email);
+  STATE.name=name; STATE.email=email; STATE.seed=hashSeed(email);
 
-  // Generate true state from seed
-  const LEVELS = ["LOW", "MED", "HIGH"];
-  STATE.trueState.alt  = seededPick(STATE.seed + 1, LEVELS);
-  STATE.trueState.urg  = seededPick(STATE.seed + 2, LEVELS);
-  STATE.trueState.walk = seededPick(STATE.seed + 3, LEVELS);
-  STATE.trueState.repSens = seededPick(STATE.seed + 4, LEVELS);
+  const L=["LOW","MED","HIGH"];
+  STATE.trueState.alt=seededPick(STATE.seed+1,L);
+  STATE.trueState.urg=seededPick(STATE.seed+2,L);
+  STATE.trueState.walk=seededPick(STATE.seed+3,L);
+  STATE.trueState.repSens=seededPick(STATE.seed+4,L);
+  STATE.trueState.gmPersonality=seededPick(STATE.seed+5,["PATIENT","BALANCED","AGGRESSIVE"]);
 
-  // Init belief with noise
-  const noisePct = 0.07;
-  STATE.belief.A = clamp(50 + seededNoise(STATE.seed + 11, noisePct), 0, 100);
-  STATE.belief.U = clamp(50 + seededNoise(STATE.seed + 12, noisePct), 0, 100);
-  STATE.belief.F = clamp(50 + seededNoise(STATE.seed + 13, noisePct), 0, 100);
-  STATE.belief.credibility = 100;
-  STATE.belief.backlash = 0;
+  const np=0.07;
+  STATE.belief.A=clamp(50+seededNoise(STATE.seed+11,np));
+  STATE.belief.U=clamp(50+seededNoise(STATE.seed+12,np));
+  STATE.belief.F=clamp(50+seededNoise(STATE.seed+13,np));
+  STATE.belief.credibility=100; STATE.belief.backlash=0;
 
-  STATE.phase = "TURN1";
-  STATE.turn = 1;
-  STATE.flagPatient = false;
-  STATE.flagUrgent = false;
-  STATE.delayQueue = [];
-  STATE.slotsApplied = [false, false, false];
-  STATE.receipts = [];
-  STATE.selectedSignalId = null;
+  STATE.phase="TURN1"; STATE.turn=1;
+  STATE.flagPatient=false; STATE.flagUrgent=false;
+  STATE.delayQueue=[]; STATE.receipts=[]; STATE.usedSignalIds=new Set();
+  STATE.selectedSignalId=null; STATE.momentum=0;
+  STATE.activeCategory="ALL"; STATE.newsEventsShown=new Set();
+  STATE.gmMood="calm"; STATE.synergyBonusesEarned=0; STATE.contradictionPenalties=0;
 
-  document.getElementById("setupScreen").style.display = "none";
-  document.getElementById("gameScreen").style.display = "block";
+  document.getElementById("setupScreen").style.display="none";
+  document.getElementById("gameScreen").style.display="block";
+  document.getElementById("opponentBox").classList.remove("visible");
+  document.getElementById("newsEvent").classList.remove("visible");
 
-  renderScenario();
-  renderMeters();
-  renderTurn();
-  updatePhaseBar();
+  renderAll();
+}
+
+function renderAll() {
+  renderScenario(); renderIntel(); renderMeters(); renderMomentum();
+  renderHistory(); renderTurn(); updatePhaseBar();
 }
 
 // ============================================================
 //  RENDERING
 // ============================================================
 function renderScenario() {
-  const ts = STATE.trueState;
   document.getElementById("scenarioText").innerHTML =
-    `You're representing <strong>Marcus Chen</strong>, a 24-year-old point guard averaging 19.2 PPG. ` +
-    `The Rivercats want to keep him cheap. Your job is to shift their beliefs about your leverage ` +
-    `over 3 rounds — without burning your credibility or triggering a backlash that kills the deal.`;
+    `You represent <strong>Marcus Chen</strong>, 24-year-old starting point guard (19.2 PPG, 7.8 APG, 4.1 RPG). ` +
+    `The Rivercats offered $20M/year. The market says he's worth $26-28M. You have <strong>${TOTAL_ROUNDS} rounds</strong> ` +
+    `to shift GM <strong>Derek Walsh's</strong> beliefs about your alternatives, the urgency of the deal, ` +
+    `and the fairness of your ask &mdash; all while managing your credibility and avoiding backlash.`;
 
-  const badges = document.getElementById("truthBadges");
-  badges.innerHTML = `
+  const ts = STATE.trueState;
+  document.getElementById("truthBadges").innerHTML = `
     <div class="truth-badge"><strong>Real Alternatives:</strong> ${ts.alt}</div>
     <div class="truth-badge"><strong>Real Urgency:</strong> ${ts.urg}</div>
     <div class="truth-badge"><strong>Walk-Away Power:</strong> ${ts.walk}</div>
-    <div class="truth-badge"><strong>Front Office Sensitivity:</strong> ${ts.repSens}</div>
+    <div class="truth-badge"><strong>GM Sensitivity:</strong> ${ts.repSens}</div>
+    <div class="truth-badge hidden-truth"><strong>GM Style:</strong> ${ts.gmPersonality}</div>
   `;
 }
 
+function renderIntel() {
+  const ts = STATE.trueState;
+  let items = [];
+  items.push(ts.alt==="HIGH"
+    ? `<strong>Alternatives:</strong> Strong. Two teams have genuine interest. Your leverage signals are backed by reality.`
+    : ts.alt==="MED"
+    ? `<strong>Alternatives:</strong> Moderate. Some interest, but nothing firm. Careful with bluffs.`
+    : `<strong>Alternatives:</strong> Weak. No other teams have called. Any alternative claim is a bluff — use with extreme caution.`);
+  items.push(ts.walk==="HIGH"
+    ? `<strong>Walk-Away:</strong> Marcus is genuinely willing to leave. Threats to walk carry weight.`
+    : ts.walk==="MED"
+    ? `<strong>Walk-Away:</strong> Marcus prefers to stay but would consider leaving. Hints at walking are risky but not empty.`
+    : `<strong>Walk-Away:</strong> Marcus won't leave. Any walk-away signal is a pure bluff that can be exposed.`);
+  items.push(ts.repSens==="HIGH"
+    ? `<strong>GM Sensitivity:</strong> High. Derek takes things personally. Backlash effects are amplified 1.5x.`
+    : ts.repSens==="MED"
+    ? `<strong>GM Sensitivity:</strong> Moderate. Derek is professional but has limits. Backlash is slightly amplified.`
+    : `<strong>GM Sensitivity:</strong> Low. Derek is thick-skinned. Pressure moves carry less backlash risk.`);
+  items.push(ts.gmPersonality==="AGGRESSIVE"
+    ? `<strong>GM Style:</strong> Aggressive. Derek pushes back hard. Expect resistance to pressure — but he respects strength.`
+    : ts.gmPersonality==="PATIENT"
+    ? `<strong>GM Style:</strong> Patient. Derek is in no hurry. Creating urgency will be harder than usual.`
+    : `<strong>GM Style:</strong> Balanced. Derek is reasonable and responsive. No extreme tendencies.`);
+
+  document.getElementById("intelGrid").innerHTML = items.map(i => `<div class="intel-item">${i}</div>`).join("");
+}
+
+let prevBelief = null;
 function renderMeters() {
   const b = STATE.belief;
   const meters = [
-    { label: "Alternatives", value: b.A, max: 100, color: meterColor(b.A), band: bandLabel(b.A) },
-    { label: "Urgency", value: b.U, max: 100, color: meterColor(b.U), band: bandLabel(b.U) },
-    { label: "Fairness", value: b.F, max: 100, color: meterColor(b.F), band: bandLabel(b.F) },
-    { label: "Credibility", value: b.credibility, max: 100, color: credColor(b.credibility), band: credLabel(b.credibility) },
-    { label: "Backlash", value: b.backlash, max: 100, color: backlashColor(b.backlash), band: backlashLabel(b.backlash) },
+    { key:"A", label:"Alternatives", value:b.A, color:meterColor(b.A), band:bandLabel(b.A) },
+    { key:"U", label:"Urgency", value:b.U, color:meterColor(b.U), band:bandLabel(b.U) },
+    { key:"F", label:"Fairness", value:b.F, color:meterColor(b.F), band:bandLabel(b.F) },
+    { key:"cred", label:"Credibility", value:b.credibility, color:credColor(b.credibility), band:credLabel(b.credibility) },
+    { key:"back", label:"Backlash", value:b.backlash, color:backlashColor(b.backlash), band:backlashLabel(b.backlash) },
   ];
 
   const row = document.getElementById("metersRow");
-  row.innerHTML = meters.map(m => `
-    <div class="meter-card">
+  row.innerHTML = meters.map(m => {
+    let delta = "";
+    if(prevBelief) {
+      let prev = m.key==="cred"?prevBelief.credibility:m.key==="back"?prevBelief.backlash:prevBelief[m.key];
+      let d = Math.round(m.value - prev);
+      if(d > 0) delta = `<span style="color:${m.key==='back'?'var(--red)':'var(--green)'}">+${d}</span>`;
+      else if(d < 0) delta = `<span style="color:${m.key==='back'?'var(--green)':'var(--red)'}">${d}</span>`;
+    }
+    return `<div class="meter-card" id="mc_${m.key}">
       <div class="meter-label">${m.label}</div>
-      <div class="meter-bar-bg">
-        <div class="meter-bar-fill" style="width:${m.value}%;background:${m.color};"></div>
-      </div>
+      <div class="meter-bar-bg"><div class="meter-bar-fill" style="width:${m.value}%;background:${m.color};"></div></div>
       <div class="meter-value" style="color:${m.color};">${m.band}</div>
       <div class="meter-number">${Math.round(m.value)} / 100</div>
-    </div>
-  `).join("");
+      <div class="meter-delta">${delta}</div>
+    </div>`;
+  }).join("");
 }
 
-function meterColor(v) {
-  if (v >= 70) return "#22c55e";
-  if (v >= 40) return "#eab308";
-  return "#ef4444";
+function renderMomentum() {
+  const m = STATE.momentum;
+  const pct = clamp((m + 100) / 2, 0, 100);
+  document.getElementById("momentumFill").style.width = pct + "%";
+  document.getElementById("momentumFill").style.background = momentumColor(m);
+  const mt = document.getElementById("momentumText");
+  mt.textContent = momentumLabel(m);
+  mt.style.color = momentumColor(m);
 }
-function credColor(v) {
-  if (v >= 75) return "#22c55e";
-  if (v >= 50) return "#eab308";
-  return "#ef4444";
+
+function updatePhaseBar() {
+  const bar = document.getElementById("phaseBar");
+  let html = "";
+  for(let i=1;i<=TOTAL_ROUNDS;i++) {
+    const cls = STATE.phase==="RESOLVED"?"done":i<STATE.turn?"done":i===STATE.turn?"active":"";
+    html += `<div class="phase-dot ${cls}"></div>`;
+  }
+  const label = STATE.phase==="RESOLVED"?"Complete":`Round ${STATE.turn} of ${TOTAL_ROUNDS}`;
+  html += `<span class="phase-label">${label}</span>`;
+  bar.innerHTML = html;
 }
-function backlashColor(v) {
-  if (v >= 55) return "#ef4444";
-  if (v >= 25) return "#eab308";
-  return "#22c55e";
+
+function renderHistory() {
+  document.getElementById("historyStrip").innerHTML = STATE.receipts.map(r => {
+    const sig = CATALOG.find(s=>s.id===r.signalId);
+    const j = getJudgment(r);
+    return `<div class="history-chip ${j.key}">
+      <span class="chip-turn">R${r.turn}</span> ${sig?sig.name:r.signalId} &mdash; <em>${j.label}</em>
+    </div>`;
+  }).join("");
 }
 
 function renderTurn() {
-  const turnIdx = STATE.turn - 1;
-  const tp = TURN_PROMPTS[turnIdx];
-
-  document.getElementById("turnTitle").textContent = tp.title;
+  const tp = TURN_PROMPTS[STATE.turn-1];
+  document.getElementById("turnTitle").innerHTML = tp.title;
   document.getElementById("turnPrompt").textContent = tp.prompt;
 
-  const grid = document.getElementById("signalGrid");
-  const b = STATE.belief;
+  // Category tabs
+  const cats = ["ALL", ...new Set(CATALOG.map(s=>s.cat))];
+  const catCounts = {};
+  cats.forEach(c => {
+    catCounts[c] = c==="ALL" ? CATALOG.length : CATALOG.filter(s=>s.cat===c).length;
+  });
 
-  grid.innerHTML = CATALOG.map(sig => {
+  document.getElementById("catTabs").innerHTML = cats.map(c =>
+    `<div class="cat-tab ${STATE.activeCategory===c?'active':''}" onclick="setCategory('${c}')">${c}<span class="cat-count">(${catCounts[c]})</span></div>`
+  ).join("");
+
+  // Signal cards
+  const filtered = STATE.activeCategory==="ALL" ? CATALOG : CATALOG.filter(s=>s.cat===STATE.activeCategory);
+
+  document.getElementById("signalGrid").innerHTML = filtered.map(sig => {
     const locked = isLocked(sig);
-    const usedBefore = STATE.receipts.some(r => r.signalId === sig.id);
-    const isDisabled = locked || usedBefore;
+    const used = STATE.usedSignalIds.has(sig.id);
+    const disabled = locked || used;
+
+    const synergies = checkSynergy(sig.id);
+    const conflicts = checkConflict(sig.id);
 
     let tags = [];
-    if (sig.dA > 0) tags.push(`<span class="sig-tag pos">Alt +${sig.dA}</span>`);
-    if (sig.dA < 0) tags.push(`<span class="sig-tag neg">Alt ${sig.dA}</span>`);
-    if (sig.dU > 0) tags.push(`<span class="sig-tag pos">Urg +${sig.dU}</span>`);
-    if (sig.dU < 0) tags.push(`<span class="sig-tag neg">Urg ${sig.dU}</span>`);
-    if (sig.dF > 0) tags.push(`<span class="sig-tag pos">Fair +${sig.dF}</span>`);
-    if (sig.dF < 0) tags.push(`<span class="sig-tag neg">Fair ${sig.dF}</span>`);
-    if (sig.credCost > 0) tags.push(`<span class="sig-tag cost">Cred -${sig.credCost}</span>`);
-    if (sig.backlashBase > 0) tags.push(`<span class="sig-tag cost">Risk +${sig.backlashBase}</span>`);
-    if (sig.delayTurns > 0) tags.push(`<span class="sig-tag neutral">Delayed ${sig.delayTurns} round</span>`);
-    if (sig.tier === "RESTRICTED") tags.push(`<span class="sig-tag restricted">Restricted</span>`);
+    if(sig.dA>0) tags.push(`<span class="sig-tag pos">Alt +${sig.dA}</span>`);
+    if(sig.dA<0) tags.push(`<span class="sig-tag neg">Alt ${sig.dA}</span>`);
+    if(sig.dU>0) tags.push(`<span class="sig-tag pos">Urg +${sig.dU}</span>`);
+    if(sig.dU<0) tags.push(`<span class="sig-tag neg">Urg ${sig.dU}</span>`);
+    if(sig.dF>0) tags.push(`<span class="sig-tag pos">Fair +${sig.dF}</span>`);
+    if(sig.dF<0) tags.push(`<span class="sig-tag neg">Fair ${sig.dF}</span>`);
+    if(sig.credCost>0) tags.push(`<span class="sig-tag cost">Cred -${sig.credCost}</span>`);
+    if(sig.backlashBase>0) tags.push(`<span class="sig-tag cost">Risk +${sig.backlashBase}</span>`);
+    if(sig.backlashBase<0) tags.push(`<span class="sig-tag pos">Risk ${sig.backlashBase}</span>`);
+    if(sig.delayTurns>0) tags.push(`<span class="sig-tag neutral">Delayed ${sig.delayTurns}r</span>`);
+    if(synergies.length>0 && !disabled) tags.push(`<span class="sig-tag synergy">Synergy x${synergies.length}</span>`);
+    if(conflicts.length>0 && !disabled) tags.push(`<span class="sig-tag neg">Conflict x${conflicts.length}</span>`);
 
-    let lockReason = "";
-    if (usedBefore) lockReason = "(Already used)";
-    else if (locked) lockReason = "(Locked — " + lockReasonText(sig) + ")";
+    const tierClass = sig.tier.toLowerCase();
+    let lockText = "";
+    if(used) lockText = `<div class="sig-lock-reason">Already used</div>`;
+    else if(locked) lockText = `<div class="sig-lock-reason">Locked: ${lockReasonText(sig)}</div>`;
 
-    return `
-      <div class="signal-card ${isDisabled ? 'locked' : ''} ${STATE.selectedSignalId === sig.id ? 'selected' : ''}"
-           data-id="${sig.id}"
-           onclick="${isDisabled ? '' : `selectSignal('${sig.id}')`}">
-        <div class="sig-tier">${sig.tier}${lockReason ? ' ' + lockReason : ''}</div>
-        <div class="sig-name">${sig.name}</div>
-        <div class="sig-desc">${sig.desc}</div>
-        <div class="sig-effects">${tags.join("")}</div>
-      </div>
-    `;
+    let synergyHint = "";
+    if(synergies.length>0 && !disabled) {
+      const names = synergies.map(id => CATALOG.find(s=>s.id===id)?.name).filter(Boolean);
+      synergyHint = `<div class="sig-synergy-hint">Synergy with: ${names.join(", ")}</div>`;
+    }
+
+    return `<div class="signal-card ${disabled?(used?'used':'locked'):''} ${STATE.selectedSignalId===sig.id?'selected':''}"
+      data-id="${sig.id}" onclick="${disabled?'':`selectSignal('${sig.id}')`}">
+      <span class="sig-tier-badge ${tierClass}">${sig.tier}</span>
+      <div class="sig-name">${sig.name}</div>
+      <div class="sig-desc">${sig.desc}</div>
+      <div class="sig-effects">${tags.join("")}</div>
+      ${synergyHint}${lockText}
+    </div>`;
   }).join("");
+
+  // Strategy note
+  const tp2 = TURN_PROMPTS[STATE.turn-1];
+  document.getElementById("strategyNote").innerHTML = `<strong>Strategy Tip:</strong> ${tp2.tip}`;
 
   document.getElementById("applyBtn").disabled = !STATE.selectedSignalId;
   document.getElementById("applyBtn").textContent = STATE.selectedSignalId ? "Send This Signal" : "Select a Signal";
+  document.getElementById("applyBtn").onclick = () => applySignal();
   document.getElementById("narrativeBox").classList.remove("visible");
-
   document.getElementById("turnPanel").style.display = "block";
   document.getElementById("resultsScreen").classList.remove("visible");
 }
 
+function setCategory(cat) { STATE.activeCategory = cat; renderTurn(); }
+
 function isLocked(sig) {
-  const b = STATE.belief;
-  // Tier gating
-  if (sig.tier === "RESTRICTED") {
-    if (b.credibility < 75 || b.backlash > 40) return true;
-  }
-  // Truth gating
-  if (sig.requiresTruth && sig.requiresTruth !== "NONE") {
-    const ts = STATE.trueState;
-    if (sig.requiresTruth === "ALT_HIGH" && ts.alt !== "HIGH") return true;
-    if (sig.requiresTruth === "URG_LOW" && ts.urg !== "LOW") return true;
-    if (sig.requiresTruth === "WALK_HIGH" && ts.walk !== "HIGH") return true;
+  const b=STATE.belief, ts=STATE.trueState;
+  if(sig.tier==="RESTRICTED" && (b.credibility<75 || b.backlash>40)) return true;
+  if(sig.tier==="ELITE" && (b.credibility<85 || b.backlash>25)) return true;
+  if(sig.requiresTruth && sig.requiresTruth!=="NONE") {
+    if(sig.requiresTruth==="ALT_HIGH" && ts.alt!=="HIGH") return true;
+    if(sig.requiresTruth==="URG_LOW" && ts.urg!=="LOW") return true;
+    if(sig.requiresTruth==="WALK_HIGH" && ts.walk!=="HIGH") return true;
   }
   return false;
 }
 
 function lockReasonText(sig) {
-  const b = STATE.belief;
-  const ts = STATE.trueState;
-  if (sig.tier === "RESTRICTED") {
-    if (b.credibility < 75) return "credibility too low";
-    if (b.backlash > 40) return "backlash too high";
+  const b=STATE.belief, ts=STATE.trueState;
+  if(sig.tier==="ELITE") {
+    if(b.credibility<85) return "credibility below 85";
+    if(b.backlash>25) return "backlash above 25";
   }
-  if (sig.requiresTruth === "ALT_HIGH" && ts.alt !== "HIGH") return "alternatives aren't actually strong";
-  if (sig.requiresTruth === "URG_LOW" && ts.urg !== "LOW") return "urgency truth doesn't support this";
-  if (sig.requiresTruth === "WALK_HIGH" && ts.walk !== "HIGH") return "walk-away isn't actually strong";
+  if(sig.tier==="RESTRICTED") {
+    if(b.credibility<75) return "credibility below 75";
+    if(b.backlash>40) return "backlash above 40";
+  }
+  if(sig.requiresTruth==="ALT_HIGH" && ts.alt!=="HIGH") return "alternatives aren't actually strong";
+  if(sig.requiresTruth==="WALK_HIGH" && ts.walk!=="HIGH") return "walk-away isn't actually strong";
   return "conditions not met";
 }
 
 function selectSignal(id) {
   STATE.selectedSignalId = id;
-  // Re-render cards to show selection
-  document.querySelectorAll(".signal-card").forEach(card => {
-    card.classList.toggle("selected", card.dataset.id === id);
-  });
+  document.querySelectorAll(".signal-card").forEach(c => c.classList.toggle("selected", c.dataset.id===id));
   document.getElementById("applyBtn").disabled = false;
   document.getElementById("applyBtn").textContent = "Send This Signal";
 }
 
-function updatePhaseBar() {
-  const turnNum = STATE.turn;
-  const resolved = STATE.phase === "RESOLVED";
-  for (let i = 1; i <= 4; i++) {
-    const dot = document.getElementById("pd" + i);
-    dot.classList.remove("active", "done");
-    if (resolved) {
-      dot.classList.add("done");
-    } else if (i < turnNum) {
-      dot.classList.add("done");
-    } else if (i === turnNum) {
-      dot.classList.add("active");
-    }
-  }
-}
-
-function renderHistory() {
-  const strip = document.getElementById("historyStrip");
-  strip.innerHTML = STATE.receipts.map(r => {
-    const sig = CATALOG.find(s => s.id === r.signalId);
-    const dA = r.post.A - r.pre.A;
-    const dU = r.post.U - r.pre.U;
-    const credSpent = r.pre.cred - r.post.cred;
-    const backlashGain = r.post.backlash - r.pre.backlash;
-    const judgment = getJudgment(r);
-    return `<div class="history-chip ${judgment.key}">
-      <span class="chip-turn">R${r.turn}</span> ${sig ? sig.name : r.signalId} — <em>${judgment.label}</em>
-    </div>`;
-  }).join("");
-}
-
 // ============================================================
-//  SIGNAL APPLICATION ENGINE
+//  APPLY SIGNAL ENGINE
 // ============================================================
 function applySignal() {
-  if (!STATE.selectedSignalId) return;
+  if(!STATE.selectedSignalId) return;
+  const sig = CATALOG.find(s=>s.id===STATE.selectedSignalId);
+  if(!sig) return;
 
-  const sig = CATALOG.find(s => s.id === STATE.selectedSignalId);
-  if (!sig) return;
+  prevBelief = { A:STATE.belief.A, U:STATE.belief.U, F:STATE.belief.F,
+    credibility:STATE.belief.credibility, backlash:STATE.belief.backlash };
 
-  const slotNum = STATE.turn;
-
-  // Snapshot pre-state
-  const pre = { ...STATE.belief, cred: STATE.belief.credibility };
-
-  // Apply delayed effects first
+  // Apply queued delayed effects first
   applyDelayedEffects();
+
+  const pre = { A:STATE.belief.A, U:STATE.belief.U, F:STATE.belief.F,
+    cred:STATE.belief.credibility, backlash:STATE.belief.backlash };
 
   const cs = credScale(STATE.belief.credibility);
   const rm = repMultiplier();
 
-  const dA = Math.round(sig.dA * cs);
-  const dU = Math.round(sig.dU * cs);
-  const dF = Math.round(sig.dF * cs);
+  // GM personality modifier
+  const gmMod = STATE.trueState.gmPersonality==="AGGRESSIVE" ? 0.85 :
+                STATE.trueState.gmPersonality==="PATIENT" ? 0.9 : 1.0;
 
-  if (sig.delayTurns > 0) {
+  let dA = Math.round(sig.dA * cs * gmMod);
+  let dU = Math.round(sig.dU * cs * (STATE.trueState.gmPersonality==="PATIENT" ? 0.8 : gmMod));
+  let dF = Math.round(sig.dF * cs * gmMod);
+
+  // Synergy bonus
+  const synergies = checkSynergy(sig.id);
+  const synergyBonus = getSynergyBonus(synergies);
+  if(synergyBonus > 0) {
+    // Apply bonus proportionally to the signal's primary axis
+    const maxD = Math.max(Math.abs(sig.dA), Math.abs(sig.dU), Math.abs(sig.dF));
+    if(maxD > 0) {
+      if(Math.abs(sig.dA)===maxD) dA += Math.sign(sig.dA) * synergyBonus;
+      else if(Math.abs(sig.dF)===maxD) dF += Math.sign(sig.dF) * synergyBonus;
+      else dU += Math.sign(sig.dU) * synergyBonus;
+    }
+    STATE.synergyBonusesEarned++;
+  }
+
+  // Conflict penalty
+  const conflicts = checkConflict(sig.id);
+  const conflictPenalty = getConflictPenalty(conflicts);
+  if(conflictPenalty > 0) {
+    STATE.belief.credibility = clamp(STATE.belief.credibility - conflictPenalty);
+    STATE.contradictionPenalties++;
+  }
+
+  // Momentum modifier
+  const momMod = STATE.momentum >= 20 ? 1.15 : STATE.momentum <= -20 ? 0.85 : 1.0;
+  dA = Math.round(dA * momMod);
+  dU = Math.round(dU * momMod);
+  dF = Math.round(dF * momMod);
+
+  // Apply or queue
+  if(sig.delayTurns > 0) {
     STATE.delayQueue.push({
-      signalId: sig.id,
-      applyTurn: STATE.turn + sig.delayTurns,
-      delta: { A: Math.round(dA * 0.6), U: Math.round(dU * 0.6), F: Math.round(dF * 0.6) }
+      signalId: sig.id, applyTurn: STATE.turn + sig.delayTurns,
+      delta: { A:Math.round(dA*0.6), U:Math.round(dU*0.6), F:Math.round(dF*0.6) }
     });
   } else {
-    STATE.belief.A = clamp(STATE.belief.A + dA, 0, 100);
-    STATE.belief.U = clamp(STATE.belief.U + dU, 0, 100);
-    STATE.belief.F = clamp(STATE.belief.F + dF, 0, 100);
+    STATE.belief.A = clamp(STATE.belief.A + dA);
+    STATE.belief.U = clamp(STATE.belief.U + dU);
+    STATE.belief.F = clamp(STATE.belief.F + dF);
   }
 
   // Costs
-  STATE.belief.credibility = clamp(STATE.belief.credibility - sig.credCost, 0, 100);
-  STATE.belief.backlash = clamp(STATE.belief.backlash + Math.round(sig.backlashBase * rm), 0, 100);
+  STATE.belief.credibility = clamp(STATE.belief.credibility - sig.credCost);
+  STATE.belief.backlash = clamp(STATE.belief.backlash + Math.round(sig.backlashBase * rm));
 
   // Contradiction flags
-  if (dU < 0) STATE.flagPatient = true;
-  if (dU > 0) STATE.flagUrgent = true;
-  if (STATE.flagPatient && STATE.flagUrgent) {
-    STATE.belief.credibility = clamp(STATE.belief.credibility - 18, 0, 100);
+  const prevPatient = STATE.flagPatient, prevUrgent = STATE.flagUrgent;
+  if(dU < 0) STATE.flagPatient = true;
+  if(dU > 0) STATE.flagUrgent = true;
+  if(STATE.flagPatient && STATE.flagUrgent && !(prevPatient && prevUrgent)) {
+    STATE.belief.credibility = clamp(STATE.belief.credibility - 18);
   }
 
-  STATE.slotsApplied[slotNum - 1] = true;
+  STATE.usedSignalIds.add(sig.id);
 
   // Apply delayed effects that become due
   applyDelayedEffects();
 
-  // Snapshot post-state
-  const post = { ...STATE.belief, cred: STATE.belief.credibility };
+  const post = { A:STATE.belief.A, U:STATE.belief.U, F:STATE.belief.F,
+    cred:STATE.belief.credibility, backlash:STATE.belief.backlash };
 
   const flagsTriggered = [];
-  if (!pre.flagPatient && STATE.flagPatient && dU < 0) flagsTriggered.push("PATIENT");
-  if (!pre.flagUrgent && STATE.flagUrgent && dU > 0) flagsTriggered.push("URGENT");
+  if(!prevPatient && STATE.flagPatient && dU<0) flagsTriggered.push("PATIENT");
+  if(!prevUrgent && STATE.flagUrgent && dU>0) flagsTriggered.push("URGENT");
+  if(synergies.length>0) flagsTriggered.push("SYNERGY");
+  if(conflicts.length>0) flagsTriggered.push("CONFLICT");
 
-  STATE.receipts.push({
-    turn: slotNum,
-    signalId: sig.id,
-    uiLabel: sig.name,
-    pre: { A: pre.A, U: pre.U, F: pre.F, cred: pre.cred || pre.credibility, backlash: pre.backlash },
-    post: { A: post.A, U: post.U, F: post.F, cred: post.cred || post.credibility, backlash: post.backlash },
-    flagsTriggered
-  });
+  const receipt = { turn:STATE.turn, signalId:sig.id, uiLabel:sig.name, pre, post,
+    flagsTriggered, synergies:synergies.length, conflicts:conflicts.length };
+  STATE.receipts.push(receipt);
 
-  // Show narrative
-  showNarrative(sig, pre, post);
+  // Update momentum
+  const judgment = getJudgment(receipt);
+  if(judgment.key==="effective" || judgment.key==="strong") STATE.momentum = clamp(STATE.momentum + 12, -100, 100);
+  else if(judgment.key==="backfired") STATE.momentum = clamp(STATE.momentum - 15, -100, 100);
+  else if(judgment.key==="risky") STATE.momentum = clamp(STATE.momentum - 5, -100, 100);
+  else STATE.momentum = clamp(STATE.momentum + 2, -100, 100);
 
-  // Update meters
-  renderMeters();
-  renderHistory();
+  if(synergies.length>0) STATE.momentum = clamp(STATE.momentum + 5, -100, 100);
+  if(conflicts.length>0) STATE.momentum = clamp(STATE.momentum - 8, -100, 100);
 
-  // Advance turn
+  // Update GM mood
+  updateGmMood();
+
   STATE.selectedSignalId = null;
 
-  if (STATE.turn < 3) {
+  // Render updates
+  showNarrative(sig, pre, post, synergies, conflicts);
+  renderMeters(); renderMomentum(); renderHistory();
+  renderOpponentReaction();
+
+  // Check for news events
+  const newsEvent = checkNewsEvents();
+  if(newsEvent) {
+    renderNewsEvent(newsEvent);
+    renderMeters(); // re-render after news effect
+  } else {
+    document.getElementById("newsEvent").classList.remove("visible");
+  }
+
+  // Advance
+  if(STATE.turn < TOTAL_ROUNDS) {
     STATE.turn++;
     STATE.phase = "TURN" + STATE.turn;
     updatePhaseBar();
-
-    // After showing narrative, allow clicking "Next Round"
     const btn = document.getElementById("applyBtn");
-    btn.textContent = "Next Round →";
+    btn.textContent = "Next Round \u2192";
     btn.disabled = false;
-    btn.onclick = () => {
-      btn.onclick = () => applySignal();
-      renderTurn();
-      updatePhaseBar();
-    };
+    btn.onclick = () => { renderAll(); document.getElementById("opponentBox").classList.add("visible"); };
   } else {
-    // Final turn — show resolve button
     const btn = document.getElementById("applyBtn");
-    btn.textContent = "See Your Results →";
+    btn.textContent = "See Your Results \u2192";
     btn.disabled = false;
     btn.onclick = () => resolveGame();
   }
@@ -1105,304 +1327,375 @@ function applySignal() {
 
 function applyDelayedEffects() {
   const remaining = [];
-  for (const item of STATE.delayQueue) {
-    if (item.applyTurn <= STATE.turn) {
-      STATE.belief.A = clamp(STATE.belief.A + (item.delta.A || 0), 0, 100);
-      STATE.belief.U = clamp(STATE.belief.U + (item.delta.U || 0), 0, 100);
-      STATE.belief.F = clamp(STATE.belief.F + (item.delta.F || 0), 0, 100);
-    } else {
-      remaining.push(item);
-    }
+  for(const item of STATE.delayQueue) {
+    if(item.applyTurn <= STATE.turn) {
+      STATE.belief.A = clamp(STATE.belief.A + (item.delta.A||0));
+      STATE.belief.U = clamp(STATE.belief.U + (item.delta.U||0));
+      STATE.belief.F = clamp(STATE.belief.F + (item.delta.F||0));
+    } else remaining.push(item);
   }
   STATE.delayQueue = remaining;
 }
 
-function showNarrative(sig, pre, post) {
+function showNarrative(sig, pre, post, synergies, conflicts) {
   const box = document.getElementById("narrativeBox");
-  const judgment = getJudgment(STATE.receipts[STATE.receipts.length - 1]);
+  const j = getJudgment(STATE.receipts[STATE.receipts.length-1]);
+  const dA=post.A-pre.A, dU=post.U-pre.U, dF=post.F-pre.F;
+  const credSpent=pre.cred-post.cred, backlashGain=post.backlash-pre.backlash;
 
-  let whyText = "";
-  const dA = post.A - pre.A;
-  const dU = post.U - pre.U;
-  const dF = post.F - pre.F;
-  const credSpent = (pre.cred || pre.credibility) - (post.cred || post.credibility);
-  const backlashGain = post.backlash - pre.backlash;
-
-  if (judgment.key === "backfired") {
-    if (dU > 0 && dA <= 0) whyText = "You increased urgency without strengthening alternatives — compressing your leverage window.";
-    else if (credSpent >= 20) whyText = "You paid a large credibility cost without securing meaningful belief movement.";
-    else if (dF < 0) whyText = "The signal weakened fairness perceptions, increasing resistance.";
-    else whyText = "The signal imposed costs without producing a compensating belief gain.";
+  let why = "";
+  if(j.key==="backfired") {
+    if(dU>0 && dA<=0) why="You increased urgency without strengthening alternatives &mdash; compressing your leverage window. The front office feels rushed but not threatened.";
+    else if(credSpent>=20) why="You paid a massive credibility cost without securing meaningful belief movement. The front office is starting to doubt your judgment.";
+    else if(dF<0) why="The signal weakened fairness perceptions. The front office now sees you as unreasonable, increasing their resistance to any deal.";
+    else why="The signal imposed costs without producing a compensating belief gain. Net negative.";
+  } else if(j.key==="strong") {
+    if(dA>8 && credSpent<=5) why="Exceptional move. You significantly strengthened perceived alternatives at minimal cost. The front office is recalculating.";
+    else why="Strong execution. Multiple belief axes moved favorably with controlled costs.";
+  } else if(j.key==="risky") {
+    why="High-variance move. You gained ground but paid a real cost. Whether this pays off depends on what comes next.";
+  } else if(j.key==="effective") {
+    if(dA>0 && credSpent<=8) why="You strengthened perceived alternatives at reasonable cost &mdash; solid positioning.";
+    else if(dF>0) why="You increased perceived fairness, making your ask feel more reasonable to the front office.";
+    else why="Clean execution. You moved belief in the right direction without overextending.";
   } else {
-    if (dA > 0 && credSpent <= 10) whyText = "You strengthened perceived alternatives at low cost — good positioning.";
-    else if (dA > 0) whyText = "You improved alternative strength, but paid credibility to do so.";
-    else if (dF > 0) whyText = "You increased perceived fairness, stabilizing the negotiation.";
-    else whyText = "The signal modestly reinforced your position without materially shifting leverage.";
+    why="The signal modestly reinforced your position without materially shifting leverage.";
+  }
+
+  let synergyHtml = "";
+  if(synergies.length > 0) {
+    const names = synergies.map(id => CATALOG.find(s=>s.id===id)?.name).filter(Boolean);
+    synergyHtml = `<div class="narr-synergy">Synergy bonus! This signal built on: ${names.join(", ")}. Effect amplified.</div>`;
+  }
+
+  let conflictHtml = "";
+  if(conflicts.length > 0) {
+    const names = conflicts.map(id => CATALOG.find(s=>s.id===id)?.name).filter(Boolean);
+    conflictHtml = `<div class="narr-warning">Conflict detected! Contradicts: ${names.join(", ")}. Credibility penalty applied.</div>`;
+  }
+
+  let delayHtml = "";
+  if(sig.delayTurns > 0) {
+    delayHtml = `<div class="narr-delay">This signal has a delayed effect &mdash; it will land in Round ${Math.min(STATE.turn, TOTAL_ROUNDS)}.</div>`;
   }
 
   box.innerHTML = `
-    <div class="narr-action">Your move: ${sig.shortAction}</div>
-    <div class="narr-reaction">${sig.whatTheySee}</div>
-    <div class="narr-judgment ${judgment.key}">Judgment: ${judgment.label}</div>
-    <div style="color:var(--text-dim);margin-top:8px;font-size:0.85rem;">${whyText}</div>
-    ${sig.delayTurns > 0 ? '<div style="color:var(--gold);margin-top:6px;font-size:0.82rem;">⏳ This signal has a delayed effect — it will land next round.</div>' : ''}
+    <div class="narr-section narr-action"><div class="narr-label">Your Move</div><div class="narr-text">${sig.shortAction}</div></div>
+    <div class="narr-section narr-reaction"><div class="narr-label">What They See</div><div class="narr-text">${sig.whatTheySee}</div></div>
+    <div class="narr-judgment ${j.key}">Verdict: ${j.label}</div>
+    <div class="narr-why">${why}</div>
+    ${synergyHtml}${conflictHtml}${delayHtml}
   `;
   box.classList.add("visible");
 }
 
 function getJudgment(receipt) {
-  const dA = receipt.post.A - receipt.pre.A;
-  const dU = receipt.post.U - receipt.pre.U;
-  const dF = receipt.post.F - receipt.pre.F;
-  const credSpent = receipt.pre.cred - receipt.post.cred;
-  const backlashGain = receipt.post.backlash - receipt.pre.backlash;
+  const dA=receipt.post.A-receipt.pre.A, dU=receipt.post.U-receipt.pre.U, dF=receipt.post.F-receipt.pre.F;
+  const credSpent=receipt.pre.cred-receipt.post.cred, backlashGain=receipt.post.backlash-receipt.pre.backlash;
 
-  if (credSpent > 12 || backlashGain > 20 || (dU > 0 && dA <= 0) || dF < 0) {
-    return { key: "backfired", label: "This backfired" };
-  }
-  if (dA > 0 && dU <= 0) {
-    return { key: "effective", label: "Effective" };
-  }
-  return { key: "neutral", label: "Neutral" };
+  // Backfired: high costs or bad axis movement
+  if(credSpent>15 || backlashGain>20) return {key:"backfired",label:"This Backfired"};
+  if(dU>0 && dA<=0 && dF<=0) return {key:"backfired",label:"This Backfired"};
+  if(dF<-5) return {key:"backfired",label:"This Backfired"};
+
+  // Strong: excellent multi-axis movement with low cost
+  if(dA>8 && dF>=0 && credSpent<=8 && backlashGain<=5) return {key:"strong",label:"Strong Play"};
+  if(dA>0 && dF>5 && credSpent<=6) return {key:"strong",label:"Strong Play"};
+
+  // Effective: positive movement on key axis
+  if(dA>0 && dU<=0 && dF>=0) return {key:"effective",label:"Effective"};
+  if(dA>0 && credSpent<=10) return {key:"effective",label:"Effective"};
+  if(dF>8 && credSpent<=5) return {key:"effective",label:"Effective"};
+
+  // Risky: mixed results
+  if(credSpent>10 || backlashGain>10) return {key:"risky",label:"Risky Move"};
+  if(dA>0 && dF<0) return {key:"risky",label:"Risky Move"};
+
+  return {key:"neutral",label:"Neutral"};
 }
 
 // ============================================================
-//  SCORING & RESOLUTION
+//  SCORING
 // ============================================================
 function scoreSequence() {
-  const receipts = STATE.receipts;
-  if (!receipts.length) return { eligible: false, reason: "No turns played." };
+  const rr = STATE.receipts;
+  if(!rr.length) return {eligible:false};
 
-  let credSpent = 0, maxBacklash = 0, contradictions = 0;
-  let sawPatient = false, sawUrgent = false;
+  let credSpent=0, maxBacklash=0, contradictions=0, sawP=false, sawU=false;
+  let strongPlays=0, backfires=0, synergyTotal=0;
 
-  receipts.forEach(r => {
-    credSpent += (r.pre.cred - r.post.cred);
+  rr.forEach(r => {
+    credSpent += (r.pre.cred-r.post.cred);
     maxBacklash = Math.max(maxBacklash, r.post.backlash);
-    const dU = r.post.U - r.pre.U;
-    if (dU < 0) sawPatient = true;
-    if (dU > 0) sawUrgent = true;
-    if (sawPatient && sawUrgent) contradictions++;
+    const dU = r.post.U-r.pre.U;
+    if(dU<0) sawP=true;
+    if(dU>0) sawU=true;
+    if(sawP&&sawU) contradictions++;
+    const j=getJudgment(r);
+    if(j.key==="strong") strongPlays++;
+    if(j.key==="backfired") backfires++;
+    synergyTotal += (r.synergies||0);
   });
 
-  const first = receipts[0].pre;
-  const last = receipts[receipts.length - 1].post;
+  const first=rr[0].pre, last=rr[rr.length-1].post;
+  const netUtility = (last.A-first.A)*0.45 + (first.U-last.U)*0.35 + (last.F-first.F)*0.20;
 
-  const netUtility =
-    (last.A - first.A) * 0.45 +
-    (first.U - last.U) * 0.35 +
-    (last.F - first.F) * 0.20;
-
-  return {
-    eligible: true,
-    credSpent,
-    maxBacklash,
-    contradictions,
-    netUtility: Math.round(netUtility * 10) / 10
-  };
+  return { eligible:true, credSpent, maxBacklash, contradictions,
+    netUtility:Math.round(netUtility*10)/10, strongPlays, backfires,
+    synergyTotal, momentum:STATE.momentum, turnsPlayed:rr.length };
 }
 
 function assignTier(score) {
-  if (!score.eligible) return { tier: "NONE", xp: 0 };
-  const { netUtility, credSpent, maxBacklash, contradictions } = score;
+  if(!score.eligible) return {tier:"NONE",xp:0};
+  const {netUtility,credSpent,maxBacklash,contradictions,strongPlays,backfires,synergyTotal}=score;
 
-  if (maxBacklash >= 70 || credSpent >= 60) return { tier: "NONE", xp: 0, reason: "Collapse risk — burned too many resources." };
+  if(maxBacklash>=70||credSpent>=70) return {tier:"NONE",xp:0,reason:"Collapse &mdash; burned too many resources."};
 
-  const allEffective = STATE.receipts.length === 3 && STATE.receipts.every(r => {
-    const cs = r.pre.cred - r.post.cred;
-    const bg = r.post.backlash - r.pre.backlash;
-    const dA = r.post.A - r.pre.A;
-    const dU = r.post.U - r.pre.U;
-    const dF = r.post.F - r.pre.F;
-    return cs <= 12 && bg <= 20 && dA > 0 && dU <= 0 && dF >= 0;
-  });
+  // GOLD: excellence across the board
+  if(netUtility>=18 && contradictions===0 && backfires===0 && strongPlays>=2 && credSpent<=40 && synergyTotal>=2)
+    return {tier:"GOLD",xp:250};
+  if(netUtility>=15 && contradictions===0 && backfires<=1 && credSpent<=45)
+    return {tier:"GOLD",xp:200};
 
-  if (allEffective && credSpent <= 35 && contradictions === 0) return { tier: "GOLD", xp: 200 };
-  if (netUtility >= 6 && credSpent <= 40 && contradictions <= 1) return { tier: "SILVER", xp: 150 };
-  if (netUtility >= 0) return { tier: "BRONZE", xp: 100 };
-  return { tier: "NONE", xp: 0 };
+  // SILVER
+  if(netUtility>=8 && contradictions<=1 && credSpent<=50 && backfires<=1)
+    return {tier:"SILVER",xp:150};
+
+  // BRONZE
+  if(netUtility>=0 && backfires<=2)
+    return {tier:"BRONZE",xp:100};
+
+  return {tier:"NONE",xp:0};
 }
 
 function buildCounterfactuals() {
-  const receipts = STATE.receipts;
-  if (!receipts.length) return [];
-
-  const usedIds = new Set(receipts.map(r => r.signalId));
-  const weights = { A: 0.45, U: 0.35, F: 0.20 };
-  const results = [];
-
-  for (let i = 0; i < receipts.length; i++) {
-    const rec = receipts[i];
-    const prior = receipts.slice(0, i);
-
-    const candidates = CATALOG.filter(s => !usedIds.has(s.id));
-    let best = null;
-
-    for (const c of candidates) {
-      const cs = credScale(rec.pre.cred);
-      const delay = c.delayTurns > 0 ? 0.6 : 1.0;
-      const dA = Math.round(c.dA * cs * delay);
-      const dU = Math.round(c.dU * cs * delay);
-      const dF = Math.round(c.dF * cs * delay);
-
-      const projected = {
-        A: clamp(rec.pre.A + dA, 0, 100),
-        U: clamp(rec.pre.U + dU, 0, 100),
-        F: clamp(rec.pre.F + dF, 0, 100)
-      };
-
-      const utilBefore = weights.A * rec.pre.A + weights.U * (100 - rec.pre.U) + weights.F * rec.pre.F;
-      const utilAfter = weights.A * projected.A + weights.U * (100 - projected.U) + weights.F * projected.F;
-      let score = utilAfter - utilBefore;
-
-      // Truth gate penalty
-      if (c.requiresTruth && c.requiresTruth !== "NONE") {
-        if (c.requiresTruth === "ALT_HIGH" && STATE.trueState.alt !== "HIGH") score -= 21;
-        if (c.requiresTruth === "URG_LOW" && STATE.trueState.urg !== "LOW") score -= 21;
-        if (c.requiresTruth === "WALK_HIGH" && STATE.trueState.walk !== "HIGH") score -= 21;
+  const rr=STATE.receipts; if(!rr.length) return [];
+  const usedIds=new Set(rr.map(r=>r.signalId));
+  const W={A:0.45,U:0.35,F:0.20};
+  return rr.map((rec,i) => {
+    const prior=rr.slice(0,i);
+    let best=null;
+    for(const c of CATALOG.filter(s=>!usedIds.has(s.id))) {
+      const cs=credScale(rec.pre.cred), delay=c.delayTurns>0?0.6:1.0;
+      const dA=Math.round(c.dA*cs*delay), dU=Math.round(c.dU*cs*delay), dF=Math.round(c.dF*cs*delay);
+      const proj={A:clamp(rec.pre.A+dA),U:clamp(rec.pre.U+dU),F:clamp(rec.pre.F+dF)};
+      let score=(W.A*proj.A+W.U*(100-proj.U)+W.F*proj.F)-(W.A*rec.pre.A+W.U*(100-rec.pre.U)+W.F*rec.pre.F);
+      if(c.requiresTruth&&c.requiresTruth!=="NONE") {
+        if(c.requiresTruth==="ALT_HIGH"&&STATE.trueState.alt!=="HIGH") score-=21;
+        if(c.requiresTruth==="WALK_HIGH"&&STATE.trueState.walk!=="HIGH") score-=21;
       }
-
-      // Coherence penalty
-      let seenPatient = false, seenUrgent = false;
-      for (const p of prior) {
-        if (p.post.U - p.pre.U < 0) seenPatient = true;
-        if (p.post.U - p.pre.U > 0) seenUrgent = true;
-      }
-      if (c.dU < 0 && seenUrgent) score -= 7;
-      if (c.dU > 0 && seenPatient) score -= 7;
-
-      if (score > -15 && (!best || score > best.score)) {
-        const reasons = [];
-        if (score > 0) reasons.push("Improves leverage from the same starting position.");
-        best = { signal: c, score, reasons };
+      let sP=false,sU=false;
+      for(const p of prior){if(p.post.U-p.pre.U<0)sP=true;if(p.post.U-p.pre.U>0)sU=true;}
+      if(c.dU<0&&sU) score-=7;
+      if(c.dU>0&&sP) score-=7;
+      // Synergy bonus in counterfactual
+      const syn = (c.synergiesWith||[]).filter(id=>usedIds.has(id)).length;
+      score += syn * 3;
+      if(score>-15&&(!best||score>best.score)) {
+        const reasons=[];
+        if(score>0) reasons.push("Better leverage gain from the same position.");
+        if(syn>0) reasons.push("Creates synergy with your earlier signals.");
+        best={signal:c,score,reasons};
       }
     }
-
-    results.push({ turn: rec.turn, actual: rec, bestAlt: best });
-  }
-
-  return results;
+    return {turn:rec.turn,actual:rec,bestAlt:best};
+  });
 }
 
 // ============================================================
-//  RESOLVE GAME — RESULTS SCREEN
+//  RESOLVE — RESULTS
 // ============================================================
 function resolveGame() {
-  STATE.phase = "RESOLVED";
-  updatePhaseBar();
-  document.getElementById("turnPanel").style.display = "none";
+  STATE.phase="RESOLVED"; updatePhaseBar();
+  document.getElementById("turnPanel").style.display="none";
+  document.getElementById("opponentBox").classList.remove("visible");
+  document.getElementById("newsEvent").classList.remove("visible");
 
-  const score = scoreSequence();
-  const tier = assignTier(score);
-  const counterfactuals = buildCounterfactuals();
+  const score=scoreSequence(), tier=assignTier(score), cfs=buildCounterfactuals();
+  let h="";
 
-  let html = "";
-
-  // Header
-  html += `<div class="results-section">
-    <h2>Postgame Film Review</h2>
-    <p>This review shows what your signals <em>communicated</em> to the Rivercats front office — not what you intended. In negotiation, leverage is about belief management, not clever moves.</p>
-  </div>`;
+  h+=`<div class="results-section"><h2>Postgame Film Review</h2>
+  <p>This review shows what your signals <em>communicated</em> to the Rivercats front office &mdash; not what you intended.
+  In negotiation, leverage is about managing what the other side <strong>believes</strong>, not what's actually true.
+  Every signal either built or eroded your position. Let's break down each round.</p></div>`;
 
   // Turn-by-turn
-  STATE.receipts.forEach((rec, i) => {
-    const sig = CATALOG.find(s => s.id === rec.signalId);
-    const judgment = getJudgment(rec);
-    const dA = rec.post.A - rec.pre.A;
-    const dU = rec.post.U - rec.pre.U;
-    const dF = rec.post.F - rec.pre.F;
-    const credSpent = rec.pre.cred - rec.post.cred;
-    const backlashGain = rec.post.backlash - rec.pre.backlash;
+  STATE.receipts.forEach((rec,i) => {
+    const sig=CATALOG.find(s=>s.id===rec.signalId);
+    const j=getJudgment(rec);
+    const dA=rec.post.A-rec.pre.A, dU=rec.post.U-rec.pre.U, dF=rec.post.F-rec.pre.F;
+    const credSpent=rec.pre.cred-rec.post.cred, backlashGain=rec.post.backlash-rec.pre.backlash;
 
-    let whyText = "";
-    if (judgment.key === "backfired") {
-      if (dU > 0 && dA <= 0) whyText = "You increased urgency without strengthening alternatives, compressing your leverage window.";
-      else if (credSpent >= 20) whyText = "You paid a large credibility cost without securing belief movement in return.";
-      else if (dF < 0) whyText = "The signal weakened fairness perceptions, increasing resistance rather than compliance.";
-      else whyText = "The signal imposed costs without producing a compensating belief gain.";
+    let why="";
+    if(j.key==="backfired") {
+      if(dU>0&&dA<=0) why="You increased urgency without strengthening alternatives &mdash; the front office felt pushed but not threatened. This compresses your leverage window.";
+      else if(credSpent>=15) why="You paid a heavy credibility cost without securing meaningful belief movement. The front office is questioning your judgment.";
+      else if(dF<-3) why="The signal damaged fairness perceptions. The front office now sees your side as unreasonable, increasing resistance.";
+      else why="The signal imposed costs without producing compensating gains. Net negative for your position.";
+    } else if(j.key==="strong") {
+      why="Excellent execution. You moved beliefs favorably on multiple axes at controlled cost. This is what elite negotiation looks like.";
+    } else if(j.key==="effective") {
+      if(dA>0&&credSpent<=8) why="You strengthened perceived alternatives at reasonable cost &mdash; solid positioning that builds toward a stronger close.";
+      else if(dF>5) why="You increased perceived fairness significantly, making your ask feel more reasonable and reducing resistance.";
+      else why="Clean move. Belief shifted in the right direction without overextending your resources.";
+    } else if(j.key==="risky") {
+      why="High-variance play. You gained ground but paid a real price. The return depends entirely on how you follow up.";
     } else {
-      if (dA > 0 && credSpent <= 10) whyText = "You strengthened perceived alternatives at low cost, improving your bargaining position.";
-      else if (dA > 0) whyText = "You improved alternative strength, but paid credibility to do so.";
-      else if (dF > 0) whyText = "You increased perceived fairness, stabilizing the negotiation environment.";
-      else whyText = "The signal modestly reinforced your position without materially shifting leverage.";
+      why="Modest impact. Your position didn't deteriorate, but it didn't meaningfully advance either.";
     }
 
-    html += `<div class="results-section">
-      <h3>Round ${rec.turn} — ${sig ? sig.name : rec.signalId}</h3>
-      <p><strong>What you did:</strong> ${sig ? sig.shortAction : ''}</p>
-      <p><strong>What they saw:</strong> ${sig ? sig.whatTheySee : ''}</p>
+    const jColor = j.key==="effective"||j.key==="strong"?"var(--green)":j.key==="backfired"?"var(--red)":j.key==="risky"?"var(--gold)":"var(--yellow)";
+
+    h+=`<div class="results-section">
+      <h3>Round ${rec.turn} &mdash; ${sig?sig.name:rec.signalId}</h3>
+      <p><strong>What you did:</strong> ${sig?sig.shortAction:""}</p>
+      <p><strong>What they saw:</strong> ${sig?sig.whatTheySee:""}</p>
       <p>
-        <span class="result-stat">Alt: ${bandLabel(rec.pre.A)} → ${bandLabel(rec.post.A)}</span>
-        <span class="result-stat">Urg: ${bandLabel(rec.pre.U)} → ${bandLabel(rec.post.U)}</span>
-        <span class="result-stat">Fair: ${bandLabel(rec.pre.F)} → ${bandLabel(rec.post.F)}</span>
+        <span class="result-stat">Alt: ${bandLabel(rec.pre.A)} &rarr; ${bandLabel(rec.post.A)} (${dA>=0?"+":""}${dA})</span>
+        <span class="result-stat">Urg: ${bandLabel(rec.pre.U)} &rarr; ${bandLabel(rec.post.U)} (${dU>=0?"+":""}${dU})</span>
+        <span class="result-stat">Fair: ${bandLabel(rec.pre.F)} &rarr; ${bandLabel(rec.post.F)} (${dF>=0?"+":""}${dF})</span>
       </p>
       <p>
         <span class="result-stat">Cred spent: ${credSpent}</span>
-        <span class="result-stat">Backlash gained: ${backlashGain}</span>
-        ${rec.flagsTriggered.length ? `<span class="result-stat">Flags: ${rec.flagsTriggered.join(", ")}</span>` : ''}
+        <span class="result-stat">Backlash: +${backlashGain}</span>
+        ${rec.synergies>0?`<span class="result-stat" style="background:rgba(45,212,191,0.15);">Synergy x${rec.synergies}</span>`:""}
+        ${rec.conflicts>0?`<span class="result-stat" style="background:rgba(239,68,68,0.15);">Conflict x${rec.conflicts}</span>`:""}
       </p>
-      <p><strong>Judgment:</strong> <span style="color:${judgment.key === 'effective' ? 'var(--green)' : judgment.key === 'backfired' ? 'var(--red)' : 'var(--yellow)'};">${judgment.label}</span></p>
-      <p><strong>Why it mattered:</strong> ${whyText}</p>`;
+      <p><strong>Verdict:</strong> <span style="color:${jColor};font-weight:600;">${j.label}</span></p>
+      <p><strong>Why it mattered:</strong> ${why}</p>`;
 
-    // Counterfactual for weak turns
-    if (judgment.key === "backfired" && counterfactuals[i]?.bestAlt) {
-      const cf = counterfactuals[i].bestAlt;
-      html += `<div class="cf-box">
-        <strong>Better alternative:</strong> ${cf.signal.name}<br/>
-        <em>${cf.reasons.join(" ")}</em>
-      </div>`;
+    if((j.key==="backfired"||j.key==="risky") && cfs[i]?.bestAlt) {
+      const cf=cfs[i].bestAlt;
+      h+=`<div class="cf-box"><strong>Better alternative:</strong> ${cf.signal.name}<br/><em>${cf.reasons.join(" ")}</em></div>`;
     }
-
-    html += `</div>`;
+    h+=`</div>`;
   });
 
   // Scorecard
-  html += `<div class="results-section">
-    <h2>Sequence Scorecard</h2>
-    <p>
-      <span class="result-stat">Credibility spent: ${score.credSpent}</span>
-      <span class="result-stat">Max backlash: ${score.maxBacklash}</span>
-      <span class="result-stat">Contradictions: ${score.contradictions}</span>
-      <span class="result-stat">Net leverage utility: ${score.netUtility}</span>
-    </p>
-  </div>`;
+  h+=`<div class="results-section"><h2>Sequence Scorecard</h2><p>
+    <span class="result-stat">Rounds played: ${score.turnsPlayed}/${TOTAL_ROUNDS}</span>
+    <span class="result-stat">Credibility spent: ${score.credSpent}</span>
+    <span class="result-stat">Max backlash: ${score.maxBacklash}</span>
+    <span class="result-stat">Contradictions: ${score.contradictions}</span>
+    <span class="result-stat">Strong plays: ${score.strongPlays}</span>
+    <span class="result-stat">Backfires: ${score.backfires}</span>
+    <span class="result-stat">Synergies earned: ${score.synergyTotal}</span>
+    <span class="result-stat">Final momentum: ${momentumLabel(score.momentum)}</span>
+    <span class="result-stat">Net leverage utility: ${score.netUtility}</span>
+  </p></div>`;
+
+  // Learning insights
+  h+=`<div class="results-section"><h2>What You Should Take Away</h2>`;
+  const insights = buildLearningInsights(score);
+  insights.forEach(ins => {
+    h+=`<div class="insight-box"><h4>${ins.title}</h4><p>${ins.text}</p></div>`;
+  });
+  h+=`</div>`;
 
   // Final verdict
-  let verdictText = "";
-  if (score.netUtility >= 15 && score.contradictions === 0) {
-    verdictText = "You consistently built leverage without contradiction. This sequence would pressure a rational front office into making a competitive offer.";
-  } else if (score.netUtility >= 10 && score.credSpent <= 35) {
-    verdictText = "You managed belief without exhausting credibility, but left leverage unrealized through sequencing choices.";
-  } else if (score.contradictions > 0) {
-    verdictText = "Your signals conflicted in tone — first patient, then urgent (or vice versa). The front office noticed the inconsistency, weakening your position.";
-  } else if (score.credSpent > 50) {
-    verdictText = "You tried to move belief faster than your credibility could support, triggering resistance from the front office.";
-  } else {
-    verdictText = "The sequence showed insight, but belief movement was too limited to create durable leverage. Marcus might need to settle.";
+  let verdict = buildVerdict(score);
+  h+=`<div class="verdict-box">
+    <div class="tier-badge ${tier.tier.toLowerCase()}">${tier.tier==="NONE"?"NO TIER":tier.tier}</div>
+    <div class="verdict-text">${verdict}</div>
+    ${tier.xp>0?`<p style="margin-top:14px;color:var(--accent-glow);font-weight:700;font-size:1.1rem;">+${tier.xp} XP</p>`:""}
+  </div>`;
+
+  h+=`<div style="text-align:center;margin-top:24px;">
+    <button class="restart-btn" onclick="restart()">Try Again with New Strategy</button>
+  </div>`;
+
+  const screen=document.getElementById("resultsScreen");
+  screen.innerHTML=h;
+  screen.classList.add("visible");
+  window.scrollTo({top:document.getElementById("resultsScreen").offsetTop-80,behavior:"smooth"});
+}
+
+function buildVerdict(score) {
+  const {netUtility,credSpent,contradictions,strongPlays,backfires,synergyTotal,maxBacklash}=score;
+
+  if(netUtility>=20 && contradictions===0 && backfires===0)
+    return "Masterclass. You built a coherent, escalating sequence that moved beliefs on every axis without contradiction. The Rivercats had no choice but to pay market rate. This is what elite agents do &mdash; they don't just make strong moves, they tell a story that the other side can't argue with. Marcus is getting paid.";
+
+  if(netUtility>=15 && contradictions===0)
+    return "Excellent negotiation. You built consistent leverage without contradiction, and the front office felt genuine pressure to move. A few sequencing choices could have been sharper, but the overall strategy was sound. Marcus is getting a strong deal.";
+
+  if(netUtility>=10 && credSpent<=45)
+    return "Solid work. You managed belief without exhausting credibility, showing real strategic discipline. But you left leverage on the table &mdash; either through timing, missed synergies, or moves that didn't fully land. Marcus gets a decent deal, but not the max.";
+
+  if(contradictions>=2)
+    return "Your signals told contradictory stories. You signaled patience, then urgency (or vice versa). The front office noticed &mdash; when your signals don't cohere, they stop believing any of them. In real negotiation, consistency is more important than any individual move. Marcus's deal suffers because the front office can't tell what you actually want.";
+
+  if(backfires>=3)
+    return "Too many mistakes. Three or more of your signals backfired, meaning you spent resources without moving belief &mdash; or actively moved it in the wrong direction. Negotiation is about precision, not aggression. Each bad signal makes the next good one less effective. Marcus might need to take a below-market deal.";
+
+  if(credSpent>55)
+    return "You tried to force belief faster than your credibility could support. When credibility runs low, every signal gets discounted &mdash; even good ones. The front office stopped taking you seriously somewhere around Round 3. Managing your credibility budget is as important as choosing the right moves.";
+
+  if(maxBacklash>=55)
+    return "Backlash reached crisis levels. The GM stopped negotiating in good faith &mdash; at some point, this became personal. You may have been right on the merits, but negotiation is a relationship game. Push too hard and the other side stops trying to find a deal. Marcus might have to accept less just to repair the relationship.";
+
+  return "The sequence showed real understanding of signaling concepts, but belief movement was too limited to create durable leverage. The front office acknowledged your points but didn't feel enough pressure to move significantly. Marcus gets a modest bump, but not the deal he deserves. Try again with a more deliberate sequence.";
+}
+
+function buildLearningInsights(score) {
+  const insights = [];
+
+  if(score.contradictions > 0) {
+    insights.push({
+      title: "Coherence Matters More Than Strength",
+      text: "You sent contradictory urgency signals (patience + urgency). In negotiation, the other side is always looking for inconsistencies. One contradiction can undo three good signals. Before each move, ask: 'Does this match the story I've been telling?'"
+    });
   }
 
-  html += `<div class="verdict-box">
-    <div class="tier-badge ${tier.tier.toLowerCase()}">${tier.tier === "NONE" ? "NO TIER" : tier.tier}</div>
-    <div class="verdict-text">${verdictText}</div>
-    ${tier.xp > 0 ? `<p style="margin-top:12px;color:var(--accent-glow);font-weight:600;">+${tier.xp} XP</p>` : ''}
-  </div>`;
+  if(score.synergyTotal >= 2) {
+    insights.push({
+      title: "You Found Signal Synergies",
+      text: `You earned ${score.synergyTotal} synergy bonuses by pairing complementary signals. This is how real negotiators build compound leverage &mdash; each signal reinforces the ones before it, making the overall position stronger than the sum of its parts.`
+    });
+  } else {
+    insights.push({
+      title: "Look for Signal Synergies",
+      text: "Some signals are designed to pair together (e.g., data signals + analytical meeting). When signals complement each other, they create compound effects. Next time, check the synergy tags before choosing."
+    });
+  }
 
-  // Restart button
-  html += `<div style="text-align:center;margin-top:24px;">
-    <button class="restart-btn" onclick="restart()">Try Again</button>
-  </div>`;
+  if(score.credSpent > 45) {
+    insights.push({
+      title: "Credibility Is a Budget",
+      text: "You spent more than half your credibility. Think of credibility like a bank account &mdash; every signal costs some, and when it runs low, all your signals get weaker. Elite negotiators find the highest-impact signals with the lowest credibility cost."
+    });
+  }
 
-  const screen = document.getElementById("resultsScreen");
-  screen.innerHTML = html;
-  screen.classList.add("visible");
+  if(score.strongPlays >= 2) {
+    insights.push({
+      title: "You Made Strong Plays",
+      text: `${score.strongPlays} of your signals were graded 'Strong Play.' These are moves that shift beliefs meaningfully while keeping costs under control. This is the skill &mdash; not just picking big moves, but picking the right move at the right time.`
+    });
+  }
+
+  if(score.backfires >= 2) {
+    insights.push({
+      title: "Costly Mistakes Add Up",
+      text: "Multiple signals backfired. Each backfire doesn't just waste a turn &mdash; it actively damages your position for future turns. In a 5-round game, you can't afford more than one mistake. Slow down and evaluate costs before committing."
+    });
+  }
+
+  // Always add the core lesson
+  insights.push({
+    title: "The Core Lesson",
+    text: "Negotiation isn't about having the strongest hand &mdash; it's about managing what the other side believes about your hand. Every signal you send either builds or erodes that belief. The best negotiators don't just react &mdash; they plan sequences that tell a coherent, escalating story."
+  });
+
+  return insights;
 }
 
 function restart() {
-  document.getElementById("gameScreen").style.display = "none";
-  document.getElementById("setupScreen").style.display = "block";
-  document.getElementById("nameInput").value = STATE.name;
-  document.getElementById("emailInput").value = STATE.email;
-  document.getElementById("setupError").style.display = "none";
+  document.getElementById("gameScreen").style.display="none";
+  document.getElementById("setupScreen").style.display="block";
+  document.getElementById("nameInput").value=STATE.name;
+  document.getElementById("emailInput").value=STATE.email;
+  document.getElementById("setupError").style.display="none";
+  prevBelief=null;
 }
 </script>
 </body>
