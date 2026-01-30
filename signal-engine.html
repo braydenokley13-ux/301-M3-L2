@@ -1,0 +1,1409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Signal Engine — Sports Agent Negotiation Sim</title>
+<style>
+  :root {
+    --bg: #0b1020;
+    --card: #161b2e;
+    --card-hover: #1c2340;
+    --accent: #3b82f6;
+    --accent-glow: #60a5fa;
+    --gold: #f59e0b;
+    --silver: #94a3b8;
+    --bronze: #d97706;
+    --green: #22c55e;
+    --red: #ef4444;
+    --yellow: #eab308;
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --border: #1e293b;
+    --panel: #111827;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ---- HEADER ---- */
+  .header {
+    background: linear-gradient(135deg, #1e3a5f 0%, #0b1020 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 24px;
+    text-align: center;
+  }
+  .header h1 {
+    font-size: 1.5rem;
+    color: var(--accent-glow);
+    letter-spacing: 1px;
+  }
+  .header .subtitle {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    margin-top: 4px;
+  }
+
+  /* ---- LAYOUT ---- */
+  .game-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  /* ---- SCENARIO PANEL ---- */
+  .scenario-panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+  .scenario-panel h2 {
+    color: var(--gold);
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+  }
+  .scenario-panel p {
+    font-size: 0.92rem;
+    line-height: 1.6;
+    color: var(--text-dim);
+  }
+  .scenario-panel .truth-badges {
+    display: flex;
+    gap: 10px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+  }
+  .truth-badge {
+    background: #1e293b;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    color: var(--text-dim);
+  }
+  .truth-badge strong { color: var(--accent-glow); }
+
+  /* ---- METERS ---- */
+  .meters-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .meter-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+    text-align: center;
+  }
+  .meter-card .meter-label {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+  .meter-bar-bg {
+    height: 10px;
+    background: #1e293b;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 6px;
+  }
+  .meter-bar-fill {
+    height: 100%;
+    border-radius: 5px;
+    transition: width 0.6s ease, background 0.6s ease;
+  }
+  .meter-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+  .meter-number {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+  }
+
+  /* ---- TURN AREA ---- */
+  .turn-panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+  .turn-panel h2 {
+    font-size: 1rem;
+    color: var(--accent-glow);
+    margin-bottom: 6px;
+  }
+  .turn-panel .turn-prompt {
+    font-size: 0.88rem;
+    color: var(--text-dim);
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+
+  /* ---- SIGNAL CARDS ---- */
+  .signal-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px;
+  }
+  .signal-card {
+    background: var(--panel);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .signal-card:hover {
+    border-color: var(--accent);
+    background: var(--card-hover);
+    transform: translateY(-2px);
+  }
+  .signal-card.selected {
+    border-color: var(--accent-glow);
+    box-shadow: 0 0 16px rgba(59,130,246,0.25);
+  }
+  .signal-card.locked {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+  .signal-card .sig-name {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+  .signal-card .sig-desc {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    line-height: 1.4;
+    margin-bottom: 10px;
+  }
+  .signal-card .sig-effects {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .sig-tag {
+    font-size: 0.7rem;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+  .sig-tag.pos { background: rgba(34,197,94,0.15); color: #4ade80; }
+  .sig-tag.neg { background: rgba(239,68,68,0.15); color: #f87171; }
+  .sig-tag.neutral { background: rgba(148,163,184,0.15); color: #94a3b8; }
+  .sig-tag.cost { background: rgba(234,179,8,0.12); color: #facc15; }
+  .sig-tag.restricted { background: rgba(239,68,68,0.2); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
+
+  .signal-card .sig-tier {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-dim);
+  }
+
+  /* ---- APPLY BUTTON ---- */
+  .apply-btn {
+    display: inline-block;
+    margin-top: 16px;
+    padding: 12px 32px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .apply-btn:hover { background: #2563eb; transform: translateY(-1px); }
+  .apply-btn:disabled {
+    background: #334155;
+    color: #64748b;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* ---- NARRATIVE FEEDBACK ---- */
+  .narrative-box {
+    background: #0f172a;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 16px;
+    font-size: 0.88rem;
+    line-height: 1.6;
+    display: none;
+  }
+  .narrative-box.visible { display: block; animation: fadeSlide 0.4s ease; }
+  .narrative-box .narr-action { color: var(--accent-glow); font-weight: 600; }
+  .narrative-box .narr-reaction { color: var(--text-dim); margin-top: 8px; }
+  .narrative-box .narr-judgment { margin-top: 10px; font-weight: 600; }
+  .narr-judgment.effective { color: var(--green); }
+  .narr-judgment.backfired { color: var(--red); }
+  .narr-judgment.neutral { color: var(--yellow); }
+
+  @keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ---- RESULTS SCREEN ---- */
+  .results-screen {
+    display: none;
+  }
+  .results-screen.visible { display: block; animation: fadeSlide 0.5s ease; }
+  .results-section {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 16px;
+  }
+  .results-section h2 {
+    color: var(--gold);
+    font-size: 1.05rem;
+    margin-bottom: 12px;
+  }
+  .results-section h3 {
+    color: var(--accent-glow);
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+  }
+  .results-section p {
+    font-size: 0.88rem;
+    line-height: 1.6;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+  }
+  .result-stat {
+    display: inline-block;
+    background: #1e293b;
+    border-radius: 6px;
+    padding: 4px 10px;
+    margin: 2px 4px 2px 0;
+    font-size: 0.8rem;
+    color: var(--text);
+  }
+  .verdict-box {
+    background: linear-gradient(135deg, #1e3a5f 0%, var(--card) 100%);
+    border: 1px solid var(--accent);
+    border-radius: 12px;
+    padding: 24px;
+    margin-top: 16px;
+    text-align: center;
+  }
+  .verdict-box .tier-badge {
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+  .verdict-box .tier-badge.gold { color: var(--gold); }
+  .verdict-box .tier-badge.silver { color: var(--silver); }
+  .verdict-box .tier-badge.bronze { color: var(--bronze); }
+  .verdict-box .tier-badge.none { color: var(--red); }
+  .verdict-text {
+    font-size: 0.92rem;
+    color: var(--text-dim);
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+  .cf-box {
+    background: rgba(245,158,11,0.08);
+    border-left: 3px solid var(--gold);
+    border-radius: 0 6px 6px 0;
+    padding: 12px 16px;
+    margin-top: 10px;
+    font-size: 0.85rem;
+  }
+  .cf-box strong { color: var(--gold); }
+
+  /* ---- PHASE INDICATOR ---- */
+  .phase-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    justify-content: center;
+  }
+  .phase-dot {
+    width: 36px;
+    height: 6px;
+    border-radius: 3px;
+    background: #1e293b;
+    transition: background 0.4s;
+  }
+  .phase-dot.active { background: var(--accent); }
+  .phase-dot.done { background: var(--green); }
+
+  /* ---- SETUP SCREEN ---- */
+  .setup-screen {
+    max-width: 500px;
+    margin: 60px auto;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 32px;
+    text-align: center;
+  }
+  .setup-screen h2 {
+    color: var(--accent-glow);
+    margin-bottom: 12px;
+  }
+  .setup-screen p {
+    font-size: 0.88rem;
+    color: var(--text-dim);
+    margin-bottom: 20px;
+    line-height: 1.6;
+  }
+  .setup-screen input {
+    width: 100%;
+    padding: 12px 16px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-size: 0.95rem;
+    margin-bottom: 12px;
+    outline: none;
+  }
+  .setup-screen input:focus { border-color: var(--accent); }
+  .setup-screen .start-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .setup-screen .start-btn:hover { background: #2563eb; }
+  .error-msg {
+    color: var(--red);
+    font-size: 0.82rem;
+    margin-bottom: 8px;
+    display: none;
+  }
+
+  /* ---- RESTART ---- */
+  .restart-btn {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 12px 28px;
+    background: transparent;
+    color: var(--accent-glow);
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .restart-btn:hover { background: rgba(59,130,246,0.1); }
+
+  /* ---- TURN HISTORY SIDEBAR ---- */
+  .history-strip {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .history-chip {
+    background: #1e293b;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+  }
+  .history-chip .chip-turn { color: var(--accent-glow); font-weight: 600; }
+  .history-chip.effective { border-color: rgba(34,197,94,0.3); }
+  .history-chip.backfired { border-color: rgba(239,68,68,0.3); }
+</style>
+</head>
+<body>
+
+<!-- ============ SETUP SCREEN ============ -->
+<div id="setupScreen" class="setup-screen">
+  <h2>BOW Sports Capital</h2>
+  <p><strong>Module 3 · Lesson 2 — Signal Engine</strong></p>
+  <p>
+    You're a rookie sports agent. Your client — star point guard <strong>Marcus Chen</strong> —
+    is a restricted free agent. The Rivercats front office thinks they can lowball him.
+    Your job: send the right signals over 3 rounds to shift their beliefs and land Marcus a fair deal.
+  </p>
+  <p style="font-size:0.82rem;">
+    Every move you make changes what the front office <em>believes</em> about your alternatives,
+    how urgent the deal is, and whether your demands are fair. Choose wisely — credibility is limited,
+    and contradictions backfire.
+  </p>
+
+  <input type="text" id="nameInput" placeholder="Your full name (first and last)" />
+  <input type="email" id="emailInput" placeholder="Your school email" />
+  <div id="setupError" class="error-msg"></div>
+  <button class="start-btn" onclick="startGame()">Start Negotiation</button>
+</div>
+
+<!-- ============ GAME SCREEN ============ -->
+<div id="gameScreen" style="display:none;">
+  <div class="header">
+    <h1>SIGNAL ENGINE</h1>
+    <div class="subtitle">BOW Track 301 · Module 3 · Lesson 2 — Sports Agent Negotiation</div>
+  </div>
+
+  <div class="game-container">
+    <!-- Phase dots -->
+    <div class="phase-bar">
+      <div class="phase-dot" id="pd1"></div>
+      <div class="phase-dot" id="pd2"></div>
+      <div class="phase-dot" id="pd3"></div>
+      <div class="phase-dot" id="pd4"></div>
+    </div>
+
+    <!-- Scenario context -->
+    <div class="scenario-panel" id="scenarioPanel">
+      <h2 id="scenarioTitle">The Situation</h2>
+      <p id="scenarioText"></p>
+      <div class="truth-badges" id="truthBadges"></div>
+    </div>
+
+    <!-- Meters -->
+    <div class="meters-row" id="metersRow"></div>
+
+    <!-- Turn history chips -->
+    <div class="history-strip" id="historyStrip"></div>
+
+    <!-- Turn panel (signal selection) -->
+    <div class="turn-panel" id="turnPanel">
+      <h2 id="turnTitle">Round 1 of 3</h2>
+      <p class="turn-prompt" id="turnPrompt"></p>
+      <div class="signal-grid" id="signalGrid"></div>
+      <button class="apply-btn" id="applyBtn" onclick="applySignal()" disabled>Select a Signal</button>
+      <div class="narrative-box" id="narrativeBox"></div>
+    </div>
+
+    <!-- Results screen -->
+    <div class="results-screen" id="resultsScreen"></div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+//  SIGNAL CATALOG — concrete sports agent moves
+// ============================================================
+const CATALOG = [
+  // --- TIER: OPEN (always available) ---
+  {
+    id: "COMP_BRIEF",
+    name: "Share Comparable Contracts",
+    desc: "Present a brief showing what similar players signed elsewhere — lets the front office see the market rate without you making demands directly.",
+    shortAction: "You slide a one-page brief across the table: three comparable deals from the last two seasons.",
+    whatTheySee: "The front office sees hard data suggesting their offer is below market. They start doing their own math.",
+    beliefGoal: "Strengthen their belief that Marcus has real alternatives.",
+    failureMode: "If your credibility is already shaky, they dismiss the comps as cherry-picked.",
+    tier: "OPEN", requiresTruth: "NONE",
+    dA: 12, dU: -3, dF: 5,
+    credCost: 4, backlashBase: 2, delayTurns: 0,
+    primaryUse: "Build alternatives perception early",
+    worksWhen: "Used early with strong credibility",
+    failsWhen: "Comps are weak or credibility is already damaged"
+  },
+  {
+    id: "PUBLIC_PRAISE",
+    name: "Praise the Organization Publicly",
+    desc: "Tell reporters Marcus loves the city and respects the franchise. Builds goodwill — but signals you might not actually leave.",
+    shortAction: "You tell a reporter: 'Marcus loves this city. He wants to be here long-term.'",
+    whatTheySee: "The front office feels reassured — but also less pressure to move quickly.",
+    beliefGoal: "Increase fairness perception, but may reduce their sense of urgency.",
+    failureMode: "They take it as a signal you're not going anywhere and slow-play the negotiation.",
+    tier: "OPEN", requiresTruth: "NONE",
+    dA: -4, dU: -8, dF: 10,
+    credCost: 2, backlashBase: 0, delayTurns: 0,
+    primaryUse: "Fairness/goodwill building",
+    worksWhen: "Paired with credible pressure later",
+    failsWhen: "Used without follow-up leverage"
+  },
+  {
+    id: "MEDIA_LEAK",
+    name: "Leak Interest from Another Team",
+    desc: "Anonymously tip a reporter that another franchise reached out. Creates urgency — but if it's not true, you risk getting caught.",
+    shortAction: "A reporter tweets: 'League source says at least one Western Conference team has reached out about Marcus Chen.'",
+    whatTheySee: "The front office scrambles — are they about to lose their point guard? They speed up internal discussions.",
+    beliefGoal: "Spike urgency and alternatives perception.",
+    failureMode: "If alternatives aren't actually strong, the bluff can unravel fast.",
+    tier: "OPEN", requiresTruth: "ALT_HIGH",
+    dA: 14, dU: 10, dF: -3,
+    credCost: 8, backlashBase: 10, delayTurns: 0,
+    primaryUse: "Urgency spike",
+    worksWhen: "Alternatives are genuinely high",
+    failsWhen: "Used as a bluff with no real offers — credibility tanks"
+  },
+  {
+    id: "PATIENCE_PLAY",
+    name: "Signal Patience — 'No Rush'",
+    desc: "Tell the front office you're in no hurry. If you actually have options, this is power. If you don't, it's a bluff they'll call.",
+    shortAction: "You tell their GM: 'We're comfortable taking our time. No pressure on either side.'",
+    whatTheySee: "They wonder: is this confidence or a stall? If your credibility is high, they lean toward 'confidence.'",
+    beliefGoal: "Lower urgency perception — signal you have time because you have options.",
+    failureMode: "If urgency is actually high, this looks like desperation disguised as calm.",
+    tier: "OPEN", requiresTruth: "NONE",
+    dA: 5, dU: -12, dF: 3,
+    credCost: 3, backlashBase: 1, delayTurns: 0,
+    primaryUse: "De-escalate urgency, project strength",
+    worksWhen: "Early in the process, credibility intact",
+    failsWhen: "Used late when time pressure is obvious"
+  },
+  {
+    id: "FAIR_FRAME",
+    name: "Frame the Deal as Win-Win",
+    desc: "Present your ask as fair to both sides — 'Here's why this works for the Rivercats too.' Builds process fairness without aggression.",
+    shortAction: "You walk the GM through a salary structure that gives the team cap flexibility in year 3.",
+    whatTheySee: "They see a thoughtful partner, not a hostile opponent. The deal starts to feel reasonable.",
+    beliefGoal: "Boost fairness perception directly.",
+    failureMode: "If you've already been aggressive, this seems fake.",
+    tier: "OPEN", requiresTruth: "NONE",
+    dA: 2, dU: 0, dF: 14,
+    credCost: 3, backlashBase: 0, delayTurns: 0,
+    primaryUse: "Fairness anchor",
+    worksWhen: "Early or mid-process, especially after a pressure move",
+    failsWhen: "After contradictory aggressive signals"
+  },
+  {
+    id: "WALKOUT_HINT",
+    name: "Hint at Walking Away",
+    desc: "Casually mention that Marcus has been 'looking at houses in other cities.' Strong signal — but burns credibility if your walk-away isn't real.",
+    shortAction: "At lunch with the assistant GM, you casually mention Marcus toured a house in Miami last weekend.",
+    whatTheySee: "Alarm bells. Is he actually leaving? They start gaming out what losing him would cost.",
+    beliefGoal: "Spike alternatives and urgency.",
+    failureMode: "If walk-away power isn't actually strong, they call the bluff and you look desperate.",
+    tier: "OPEN", requiresTruth: "WALK_HIGH",
+    dA: 15, dU: 8, dF: -5,
+    credCost: 10, backlashBase: 12, delayTurns: 0,
+    primaryUse: "Strong pressure play",
+    worksWhen: "Walk-away is genuinely strong",
+    failsWhen: "Walk-away is weak — becomes an empty threat"
+  },
+  {
+    id: "STATS_DROP",
+    name: "Drop Advanced Stats Package",
+    desc: "Email the front office a deep analytics breakdown showing Marcus's impact beyond box scores. Subtle — builds value without making demands.",
+    shortAction: "You send a polished 4-page analytics report: plus/minus, win shares, defensive metrics, clutch performance.",
+    whatTheySee: "The analytics staff nods — this confirms what they already suspected. The GM starts to feel the market will value Marcus too.",
+    beliefGoal: "Quietly strengthen alternatives — other teams would pay for this production.",
+    failureMode: "Delayed impact — they need time to process the data.",
+    tier: "OPEN", requiresTruth: "NONE",
+    dA: 10, dU: 0, dF: 4,
+    credCost: 2, backlashBase: 0, delayTurns: 1,
+    primaryUse: "Build alternatives perception with evidence",
+    worksWhen: "Used in Round 1 so the delayed effect lands in Round 2",
+    failsWhen: "Used in Round 3 — effect arrives too late to matter"
+  },
+  // --- TIER: RESTRICTED (requires high cred, low backlash) ---
+  {
+    id: "DEADLINE_SET",
+    name: "Set a Hard Deadline",
+    desc: "Tell the front office: 'We need an answer by Friday or we explore the open market.' Maximum pressure — but only works if everything else supports it.",
+    shortAction: "You call the GM directly: 'We've been patient. We need a number by end of week.'",
+    whatTheySee: "The GM's stomach drops. This is real pressure — but only if they believe you'll actually walk.",
+    beliefGoal: "Force urgency. Everything accelerates.",
+    failureMode: "If your credibility is damaged or alternatives seem fake, they call the bluff and let Friday pass.",
+    tier: "RESTRICTED", requiresTruth: "NONE",
+    dA: 6, dU: 16, dF: -6,
+    credCost: 12, backlashBase: 14, delayTurns: 0,
+    primaryUse: "Endgame pressure",
+    worksWhen: "Credibility > 75, alternatives are believed, backlash is low",
+    failsWhen: "Used too early or with damaged credibility"
+  },
+  {
+    id: "OWNER_MEETING",
+    name: "Request Meeting with the Owner",
+    desc: "Go over the GM's head and ask to meet the team owner directly. Power move — but the GM may feel disrespected.",
+    shortAction: "You request a sit-down with the Rivercats' owner, bypassing the GM entirely.",
+    whatTheySee: "The owner is intrigued. The GM is furious. The power dynamic shifts — but so does the backlash risk.",
+    beliefGoal: "Signal that you're serious enough to escalate. Boosts alternatives perception.",
+    failureMode: "The GM retaliates by slowing everything down. Backlash spikes.",
+    tier: "RESTRICTED", requiresTruth: "NONE",
+    dA: 10, dU: 5, dF: -8,
+    credCost: 8, backlashBase: 16, delayTurns: 0,
+    primaryUse: "Escalation play",
+    worksWhen: "GM is stalling and you have credibility to burn",
+    failsWhen: "Used without strong position — looks like desperation"
+  },
+  {
+    id: "SOCIAL_SILENCE",
+    name: "Marcus Goes Silent on Social Media",
+    desc: "Marcus stops posting about the Rivercats entirely. Fans notice. The front office notices. Subtle — but sends a loud signal.",
+    shortAction: "Marcus hasn't posted anything about the team in 10 days. Fans are speculating. Sports talk radio is buzzing.",
+    whatTheySee: "The front office PR team flags it. 'He's distancing himself.' Urgency quietly builds.",
+    beliefGoal: "Create ambient urgency without direct confrontation.",
+    failureMode: "If overused alongside aggressive moves, it looks petty instead of strategic.",
+    tier: "RESTRICTED", requiresTruth: "NONE",
+    dA: 4, dU: 10, dF: 0,
+    credCost: 5, backlashBase: 6, delayTurns: 1,
+    primaryUse: "Ambient pressure builder",
+    worksWhen: "Paired with patience — looks like quiet confidence",
+    failsWhen: "Used after aggressive moves — looks childish"
+  }
+];
+
+// ============================================================
+//  TURN-SPECIFIC PROMPTS (contextual narrative per round)
+// ============================================================
+const TURN_PROMPTS = [
+  {
+    title: "Round 1 of 3 — Opening Move",
+    prompt: "It's your first meeting week with the Rivercats front office. Marcus is watching — he trusts you to set the right tone. The front office is relaxed, thinking they have all the leverage. What signal do you send first?"
+  },
+  {
+    title: "Round 2 of 3 — Mid-Negotiation",
+    prompt: "The front office has had time to react to your first move. They're recalculating. This is where most negotiations are won or lost — your second signal either builds on the first or contradicts it. Choose carefully."
+  },
+  {
+    title: "Round 3 of 3 — Closing Move",
+    prompt: "This is it. Your final signal before the front office makes their decision. Everything you've built — credibility, alternatives perception, urgency — comes down to this move. What's your closer?"
+  }
+];
+
+// ============================================================
+//  GAME STATE
+// ============================================================
+let STATE = {
+  name: "",
+  email: "",
+  seed: 0,
+  phase: "SETUP", // SETUP, TURN1, TURN2, TURN3, RESOLVED
+
+  trueState: { alt: "LOW", urg: "LOW", walk: "LOW", repSens: "LOW" },
+
+  belief: { A: 50, U: 50, F: 50, credibility: 100, backlash: 0 },
+  flagPatient: false,
+  flagUrgent: false,
+  delayQueue: [],
+  slotsApplied: [false, false, false],
+  selectedSignalId: null,
+  turn: 1,
+
+  receipts: [] // { turn, signalId, pre, post, flagsTriggered }
+};
+
+// ============================================================
+//  UTILITY FUNCTIONS
+// ============================================================
+function clamp(v, min = 0, max = 100) {
+  const n = Number(v);
+  return isNaN(n) ? min : Math.min(max, Math.max(min, n));
+}
+
+function hashSeed(email) {
+  let h = 0;
+  for (let i = 0; i < email.length; i++) {
+    h = (h << 5) - h + email.charCodeAt(i);
+    h |= 0;
+  }
+  return Math.abs(h);
+}
+
+function seededPick(seed, arr) { return arr[seed % arr.length]; }
+
+function seededNoise(seed, pct) {
+  const max = Math.round(pct * 100);
+  const n = (seed * 9301 + 49297) % 233280;
+  const r = n / 233280;
+  return Math.round((r * 2 - 1) * max);
+}
+
+function bandLabel(v) {
+  const n = Number(v || 0);
+  if (n >= 70) return "HIGH";
+  if (n >= 40) return "MID";
+  return "LOW";
+}
+
+function credLabel(v) {
+  const n = Number(v || 0);
+  if (n >= 75) return "GREEN";
+  if (n >= 50) return "YELLOW";
+  return "RED";
+}
+
+function backlashLabel(v) {
+  const n = Number(v || 0);
+  if (n >= 55) return "CRISIS";
+  if (n >= 25) return "RISING";
+  return "LOW";
+}
+
+function credScale(cred) {
+  const c = clamp(cred, 0, 100) / 100;
+  return 0.55 + 0.45 * c;
+}
+
+function repMultiplier() {
+  const r = STATE.trueState.repSens.toUpperCase();
+  if (r === "HIGH") return 1.5;
+  if (r === "MED") return 1.2;
+  return 1.0;
+}
+
+// ============================================================
+//  GAME INITIALIZATION
+// ============================================================
+function startGame() {
+  const name = document.getElementById("nameInput").value.trim();
+  const email = document.getElementById("emailInput").value.trim().toLowerCase();
+  const errEl = document.getElementById("setupError");
+
+  if (name.split(" ").filter(Boolean).length < 2) {
+    errEl.textContent = "Please enter your first and last name.";
+    errEl.style.display = "block";
+    return;
+  }
+  if (!email.includes("@") || !email.includes(".")) {
+    errEl.textContent = "Please enter a valid email address.";
+    errEl.style.display = "block";
+    return;
+  }
+
+  STATE.name = name;
+  STATE.email = email;
+  STATE.seed = hashSeed(email);
+
+  // Generate true state from seed
+  const LEVELS = ["LOW", "MED", "HIGH"];
+  STATE.trueState.alt  = seededPick(STATE.seed + 1, LEVELS);
+  STATE.trueState.urg  = seededPick(STATE.seed + 2, LEVELS);
+  STATE.trueState.walk = seededPick(STATE.seed + 3, LEVELS);
+  STATE.trueState.repSens = seededPick(STATE.seed + 4, LEVELS);
+
+  // Init belief with noise
+  const noisePct = 0.07;
+  STATE.belief.A = clamp(50 + seededNoise(STATE.seed + 11, noisePct), 0, 100);
+  STATE.belief.U = clamp(50 + seededNoise(STATE.seed + 12, noisePct), 0, 100);
+  STATE.belief.F = clamp(50 + seededNoise(STATE.seed + 13, noisePct), 0, 100);
+  STATE.belief.credibility = 100;
+  STATE.belief.backlash = 0;
+
+  STATE.phase = "TURN1";
+  STATE.turn = 1;
+  STATE.flagPatient = false;
+  STATE.flagUrgent = false;
+  STATE.delayQueue = [];
+  STATE.slotsApplied = [false, false, false];
+  STATE.receipts = [];
+  STATE.selectedSignalId = null;
+
+  document.getElementById("setupScreen").style.display = "none";
+  document.getElementById("gameScreen").style.display = "block";
+
+  renderScenario();
+  renderMeters();
+  renderTurn();
+  updatePhaseBar();
+}
+
+// ============================================================
+//  RENDERING
+// ============================================================
+function renderScenario() {
+  const ts = STATE.trueState;
+  document.getElementById("scenarioText").innerHTML =
+    `You're representing <strong>Marcus Chen</strong>, a 24-year-old point guard averaging 19.2 PPG. ` +
+    `The Rivercats want to keep him cheap. Your job is to shift their beliefs about your leverage ` +
+    `over 3 rounds — without burning your credibility or triggering a backlash that kills the deal.`;
+
+  const badges = document.getElementById("truthBadges");
+  badges.innerHTML = `
+    <div class="truth-badge"><strong>Real Alternatives:</strong> ${ts.alt}</div>
+    <div class="truth-badge"><strong>Real Urgency:</strong> ${ts.urg}</div>
+    <div class="truth-badge"><strong>Walk-Away Power:</strong> ${ts.walk}</div>
+    <div class="truth-badge"><strong>Front Office Sensitivity:</strong> ${ts.repSens}</div>
+  `;
+}
+
+function renderMeters() {
+  const b = STATE.belief;
+  const meters = [
+    { label: "Alternatives", value: b.A, max: 100, color: meterColor(b.A), band: bandLabel(b.A) },
+    { label: "Urgency", value: b.U, max: 100, color: meterColor(b.U), band: bandLabel(b.U) },
+    { label: "Fairness", value: b.F, max: 100, color: meterColor(b.F), band: bandLabel(b.F) },
+    { label: "Credibility", value: b.credibility, max: 100, color: credColor(b.credibility), band: credLabel(b.credibility) },
+    { label: "Backlash", value: b.backlash, max: 100, color: backlashColor(b.backlash), band: backlashLabel(b.backlash) },
+  ];
+
+  const row = document.getElementById("metersRow");
+  row.innerHTML = meters.map(m => `
+    <div class="meter-card">
+      <div class="meter-label">${m.label}</div>
+      <div class="meter-bar-bg">
+        <div class="meter-bar-fill" style="width:${m.value}%;background:${m.color};"></div>
+      </div>
+      <div class="meter-value" style="color:${m.color};">${m.band}</div>
+      <div class="meter-number">${Math.round(m.value)} / 100</div>
+    </div>
+  `).join("");
+}
+
+function meterColor(v) {
+  if (v >= 70) return "#22c55e";
+  if (v >= 40) return "#eab308";
+  return "#ef4444";
+}
+function credColor(v) {
+  if (v >= 75) return "#22c55e";
+  if (v >= 50) return "#eab308";
+  return "#ef4444";
+}
+function backlashColor(v) {
+  if (v >= 55) return "#ef4444";
+  if (v >= 25) return "#eab308";
+  return "#22c55e";
+}
+
+function renderTurn() {
+  const turnIdx = STATE.turn - 1;
+  const tp = TURN_PROMPTS[turnIdx];
+
+  document.getElementById("turnTitle").textContent = tp.title;
+  document.getElementById("turnPrompt").textContent = tp.prompt;
+
+  const grid = document.getElementById("signalGrid");
+  const b = STATE.belief;
+
+  grid.innerHTML = CATALOG.map(sig => {
+    const locked = isLocked(sig);
+    const usedBefore = STATE.receipts.some(r => r.signalId === sig.id);
+    const isDisabled = locked || usedBefore;
+
+    let tags = [];
+    if (sig.dA > 0) tags.push(`<span class="sig-tag pos">Alt +${sig.dA}</span>`);
+    if (sig.dA < 0) tags.push(`<span class="sig-tag neg">Alt ${sig.dA}</span>`);
+    if (sig.dU > 0) tags.push(`<span class="sig-tag pos">Urg +${sig.dU}</span>`);
+    if (sig.dU < 0) tags.push(`<span class="sig-tag neg">Urg ${sig.dU}</span>`);
+    if (sig.dF > 0) tags.push(`<span class="sig-tag pos">Fair +${sig.dF}</span>`);
+    if (sig.dF < 0) tags.push(`<span class="sig-tag neg">Fair ${sig.dF}</span>`);
+    if (sig.credCost > 0) tags.push(`<span class="sig-tag cost">Cred -${sig.credCost}</span>`);
+    if (sig.backlashBase > 0) tags.push(`<span class="sig-tag cost">Risk +${sig.backlashBase}</span>`);
+    if (sig.delayTurns > 0) tags.push(`<span class="sig-tag neutral">Delayed ${sig.delayTurns} round</span>`);
+    if (sig.tier === "RESTRICTED") tags.push(`<span class="sig-tag restricted">Restricted</span>`);
+
+    let lockReason = "";
+    if (usedBefore) lockReason = "(Already used)";
+    else if (locked) lockReason = "(Locked — " + lockReasonText(sig) + ")";
+
+    return `
+      <div class="signal-card ${isDisabled ? 'locked' : ''} ${STATE.selectedSignalId === sig.id ? 'selected' : ''}"
+           data-id="${sig.id}"
+           onclick="${isDisabled ? '' : `selectSignal('${sig.id}')`}">
+        <div class="sig-tier">${sig.tier}${lockReason ? ' ' + lockReason : ''}</div>
+        <div class="sig-name">${sig.name}</div>
+        <div class="sig-desc">${sig.desc}</div>
+        <div class="sig-effects">${tags.join("")}</div>
+      </div>
+    `;
+  }).join("");
+
+  document.getElementById("applyBtn").disabled = !STATE.selectedSignalId;
+  document.getElementById("applyBtn").textContent = STATE.selectedSignalId ? "Send This Signal" : "Select a Signal";
+  document.getElementById("narrativeBox").classList.remove("visible");
+
+  document.getElementById("turnPanel").style.display = "block";
+  document.getElementById("resultsScreen").classList.remove("visible");
+}
+
+function isLocked(sig) {
+  const b = STATE.belief;
+  // Tier gating
+  if (sig.tier === "RESTRICTED") {
+    if (b.credibility < 75 || b.backlash > 40) return true;
+  }
+  // Truth gating
+  if (sig.requiresTruth && sig.requiresTruth !== "NONE") {
+    const ts = STATE.trueState;
+    if (sig.requiresTruth === "ALT_HIGH" && ts.alt !== "HIGH") return true;
+    if (sig.requiresTruth === "URG_LOW" && ts.urg !== "LOW") return true;
+    if (sig.requiresTruth === "WALK_HIGH" && ts.walk !== "HIGH") return true;
+  }
+  return false;
+}
+
+function lockReasonText(sig) {
+  const b = STATE.belief;
+  const ts = STATE.trueState;
+  if (sig.tier === "RESTRICTED") {
+    if (b.credibility < 75) return "credibility too low";
+    if (b.backlash > 40) return "backlash too high";
+  }
+  if (sig.requiresTruth === "ALT_HIGH" && ts.alt !== "HIGH") return "alternatives aren't actually strong";
+  if (sig.requiresTruth === "URG_LOW" && ts.urg !== "LOW") return "urgency truth doesn't support this";
+  if (sig.requiresTruth === "WALK_HIGH" && ts.walk !== "HIGH") return "walk-away isn't actually strong";
+  return "conditions not met";
+}
+
+function selectSignal(id) {
+  STATE.selectedSignalId = id;
+  // Re-render cards to show selection
+  document.querySelectorAll(".signal-card").forEach(card => {
+    card.classList.toggle("selected", card.dataset.id === id);
+  });
+  document.getElementById("applyBtn").disabled = false;
+  document.getElementById("applyBtn").textContent = "Send This Signal";
+}
+
+function updatePhaseBar() {
+  const turnNum = STATE.turn;
+  const resolved = STATE.phase === "RESOLVED";
+  for (let i = 1; i <= 4; i++) {
+    const dot = document.getElementById("pd" + i);
+    dot.classList.remove("active", "done");
+    if (resolved) {
+      dot.classList.add("done");
+    } else if (i < turnNum) {
+      dot.classList.add("done");
+    } else if (i === turnNum) {
+      dot.classList.add("active");
+    }
+  }
+}
+
+function renderHistory() {
+  const strip = document.getElementById("historyStrip");
+  strip.innerHTML = STATE.receipts.map(r => {
+    const sig = CATALOG.find(s => s.id === r.signalId);
+    const dA = r.post.A - r.pre.A;
+    const dU = r.post.U - r.pre.U;
+    const credSpent = r.pre.cred - r.post.cred;
+    const backlashGain = r.post.backlash - r.pre.backlash;
+    const judgment = getJudgment(r);
+    return `<div class="history-chip ${judgment.key}">
+      <span class="chip-turn">R${r.turn}</span> ${sig ? sig.name : r.signalId} — <em>${judgment.label}</em>
+    </div>`;
+  }).join("");
+}
+
+// ============================================================
+//  SIGNAL APPLICATION ENGINE
+// ============================================================
+function applySignal() {
+  if (!STATE.selectedSignalId) return;
+
+  const sig = CATALOG.find(s => s.id === STATE.selectedSignalId);
+  if (!sig) return;
+
+  const slotNum = STATE.turn;
+
+  // Snapshot pre-state
+  const pre = { ...STATE.belief, cred: STATE.belief.credibility };
+
+  // Apply delayed effects first
+  applyDelayedEffects();
+
+  const cs = credScale(STATE.belief.credibility);
+  const rm = repMultiplier();
+
+  const dA = Math.round(sig.dA * cs);
+  const dU = Math.round(sig.dU * cs);
+  const dF = Math.round(sig.dF * cs);
+
+  if (sig.delayTurns > 0) {
+    STATE.delayQueue.push({
+      signalId: sig.id,
+      applyTurn: STATE.turn + sig.delayTurns,
+      delta: { A: Math.round(dA * 0.6), U: Math.round(dU * 0.6), F: Math.round(dF * 0.6) }
+    });
+  } else {
+    STATE.belief.A = clamp(STATE.belief.A + dA, 0, 100);
+    STATE.belief.U = clamp(STATE.belief.U + dU, 0, 100);
+    STATE.belief.F = clamp(STATE.belief.F + dF, 0, 100);
+  }
+
+  // Costs
+  STATE.belief.credibility = clamp(STATE.belief.credibility - sig.credCost, 0, 100);
+  STATE.belief.backlash = clamp(STATE.belief.backlash + Math.round(sig.backlashBase * rm), 0, 100);
+
+  // Contradiction flags
+  if (dU < 0) STATE.flagPatient = true;
+  if (dU > 0) STATE.flagUrgent = true;
+  if (STATE.flagPatient && STATE.flagUrgent) {
+    STATE.belief.credibility = clamp(STATE.belief.credibility - 18, 0, 100);
+  }
+
+  STATE.slotsApplied[slotNum - 1] = true;
+
+  // Apply delayed effects that become due
+  applyDelayedEffects();
+
+  // Snapshot post-state
+  const post = { ...STATE.belief, cred: STATE.belief.credibility };
+
+  const flagsTriggered = [];
+  if (!pre.flagPatient && STATE.flagPatient && dU < 0) flagsTriggered.push("PATIENT");
+  if (!pre.flagUrgent && STATE.flagUrgent && dU > 0) flagsTriggered.push("URGENT");
+
+  STATE.receipts.push({
+    turn: slotNum,
+    signalId: sig.id,
+    uiLabel: sig.name,
+    pre: { A: pre.A, U: pre.U, F: pre.F, cred: pre.cred || pre.credibility, backlash: pre.backlash },
+    post: { A: post.A, U: post.U, F: post.F, cred: post.cred || post.credibility, backlash: post.backlash },
+    flagsTriggered
+  });
+
+  // Show narrative
+  showNarrative(sig, pre, post);
+
+  // Update meters
+  renderMeters();
+  renderHistory();
+
+  // Advance turn
+  STATE.selectedSignalId = null;
+
+  if (STATE.turn < 3) {
+    STATE.turn++;
+    STATE.phase = "TURN" + STATE.turn;
+    updatePhaseBar();
+
+    // After showing narrative, allow clicking "Next Round"
+    const btn = document.getElementById("applyBtn");
+    btn.textContent = "Next Round →";
+    btn.disabled = false;
+    btn.onclick = () => {
+      btn.onclick = () => applySignal();
+      renderTurn();
+      updatePhaseBar();
+    };
+  } else {
+    // Final turn — show resolve button
+    const btn = document.getElementById("applyBtn");
+    btn.textContent = "See Your Results →";
+    btn.disabled = false;
+    btn.onclick = () => resolveGame();
+  }
+}
+
+function applyDelayedEffects() {
+  const remaining = [];
+  for (const item of STATE.delayQueue) {
+    if (item.applyTurn <= STATE.turn) {
+      STATE.belief.A = clamp(STATE.belief.A + (item.delta.A || 0), 0, 100);
+      STATE.belief.U = clamp(STATE.belief.U + (item.delta.U || 0), 0, 100);
+      STATE.belief.F = clamp(STATE.belief.F + (item.delta.F || 0), 0, 100);
+    } else {
+      remaining.push(item);
+    }
+  }
+  STATE.delayQueue = remaining;
+}
+
+function showNarrative(sig, pre, post) {
+  const box = document.getElementById("narrativeBox");
+  const judgment = getJudgment(STATE.receipts[STATE.receipts.length - 1]);
+
+  let whyText = "";
+  const dA = post.A - pre.A;
+  const dU = post.U - pre.U;
+  const dF = post.F - pre.F;
+  const credSpent = (pre.cred || pre.credibility) - (post.cred || post.credibility);
+  const backlashGain = post.backlash - pre.backlash;
+
+  if (judgment.key === "backfired") {
+    if (dU > 0 && dA <= 0) whyText = "You increased urgency without strengthening alternatives — compressing your leverage window.";
+    else if (credSpent >= 20) whyText = "You paid a large credibility cost without securing meaningful belief movement.";
+    else if (dF < 0) whyText = "The signal weakened fairness perceptions, increasing resistance.";
+    else whyText = "The signal imposed costs without producing a compensating belief gain.";
+  } else {
+    if (dA > 0 && credSpent <= 10) whyText = "You strengthened perceived alternatives at low cost — good positioning.";
+    else if (dA > 0) whyText = "You improved alternative strength, but paid credibility to do so.";
+    else if (dF > 0) whyText = "You increased perceived fairness, stabilizing the negotiation.";
+    else whyText = "The signal modestly reinforced your position without materially shifting leverage.";
+  }
+
+  box.innerHTML = `
+    <div class="narr-action">Your move: ${sig.shortAction}</div>
+    <div class="narr-reaction">${sig.whatTheySee}</div>
+    <div class="narr-judgment ${judgment.key}">Judgment: ${judgment.label}</div>
+    <div style="color:var(--text-dim);margin-top:8px;font-size:0.85rem;">${whyText}</div>
+    ${sig.delayTurns > 0 ? '<div style="color:var(--gold);margin-top:6px;font-size:0.82rem;">⏳ This signal has a delayed effect — it will land next round.</div>' : ''}
+  `;
+  box.classList.add("visible");
+}
+
+function getJudgment(receipt) {
+  const dA = receipt.post.A - receipt.pre.A;
+  const dU = receipt.post.U - receipt.pre.U;
+  const dF = receipt.post.F - receipt.pre.F;
+  const credSpent = receipt.pre.cred - receipt.post.cred;
+  const backlashGain = receipt.post.backlash - receipt.pre.backlash;
+
+  if (credSpent > 12 || backlashGain > 20 || (dU > 0 && dA <= 0) || dF < 0) {
+    return { key: "backfired", label: "This backfired" };
+  }
+  if (dA > 0 && dU <= 0) {
+    return { key: "effective", label: "Effective" };
+  }
+  return { key: "neutral", label: "Neutral" };
+}
+
+// ============================================================
+//  SCORING & RESOLUTION
+// ============================================================
+function scoreSequence() {
+  const receipts = STATE.receipts;
+  if (!receipts.length) return { eligible: false, reason: "No turns played." };
+
+  let credSpent = 0, maxBacklash = 0, contradictions = 0;
+  let sawPatient = false, sawUrgent = false;
+
+  receipts.forEach(r => {
+    credSpent += (r.pre.cred - r.post.cred);
+    maxBacklash = Math.max(maxBacklash, r.post.backlash);
+    const dU = r.post.U - r.pre.U;
+    if (dU < 0) sawPatient = true;
+    if (dU > 0) sawUrgent = true;
+    if (sawPatient && sawUrgent) contradictions++;
+  });
+
+  const first = receipts[0].pre;
+  const last = receipts[receipts.length - 1].post;
+
+  const netUtility =
+    (last.A - first.A) * 0.45 +
+    (first.U - last.U) * 0.35 +
+    (last.F - first.F) * 0.20;
+
+  return {
+    eligible: true,
+    credSpent,
+    maxBacklash,
+    contradictions,
+    netUtility: Math.round(netUtility * 10) / 10
+  };
+}
+
+function assignTier(score) {
+  if (!score.eligible) return { tier: "NONE", xp: 0 };
+  const { netUtility, credSpent, maxBacklash, contradictions } = score;
+
+  if (maxBacklash >= 70 || credSpent >= 60) return { tier: "NONE", xp: 0, reason: "Collapse risk — burned too many resources." };
+
+  const allEffective = STATE.receipts.length === 3 && STATE.receipts.every(r => {
+    const cs = r.pre.cred - r.post.cred;
+    const bg = r.post.backlash - r.pre.backlash;
+    const dA = r.post.A - r.pre.A;
+    const dU = r.post.U - r.pre.U;
+    const dF = r.post.F - r.pre.F;
+    return cs <= 12 && bg <= 20 && dA > 0 && dU <= 0 && dF >= 0;
+  });
+
+  if (allEffective && credSpent <= 35 && contradictions === 0) return { tier: "GOLD", xp: 200 };
+  if (netUtility >= 6 && credSpent <= 40 && contradictions <= 1) return { tier: "SILVER", xp: 150 };
+  if (netUtility >= 0) return { tier: "BRONZE", xp: 100 };
+  return { tier: "NONE", xp: 0 };
+}
+
+function buildCounterfactuals() {
+  const receipts = STATE.receipts;
+  if (!receipts.length) return [];
+
+  const usedIds = new Set(receipts.map(r => r.signalId));
+  const weights = { A: 0.45, U: 0.35, F: 0.20 };
+  const results = [];
+
+  for (let i = 0; i < receipts.length; i++) {
+    const rec = receipts[i];
+    const prior = receipts.slice(0, i);
+
+    const candidates = CATALOG.filter(s => !usedIds.has(s.id));
+    let best = null;
+
+    for (const c of candidates) {
+      const cs = credScale(rec.pre.cred);
+      const delay = c.delayTurns > 0 ? 0.6 : 1.0;
+      const dA = Math.round(c.dA * cs * delay);
+      const dU = Math.round(c.dU * cs * delay);
+      const dF = Math.round(c.dF * cs * delay);
+
+      const projected = {
+        A: clamp(rec.pre.A + dA, 0, 100),
+        U: clamp(rec.pre.U + dU, 0, 100),
+        F: clamp(rec.pre.F + dF, 0, 100)
+      };
+
+      const utilBefore = weights.A * rec.pre.A + weights.U * (100 - rec.pre.U) + weights.F * rec.pre.F;
+      const utilAfter = weights.A * projected.A + weights.U * (100 - projected.U) + weights.F * projected.F;
+      let score = utilAfter - utilBefore;
+
+      // Truth gate penalty
+      if (c.requiresTruth && c.requiresTruth !== "NONE") {
+        if (c.requiresTruth === "ALT_HIGH" && STATE.trueState.alt !== "HIGH") score -= 21;
+        if (c.requiresTruth === "URG_LOW" && STATE.trueState.urg !== "LOW") score -= 21;
+        if (c.requiresTruth === "WALK_HIGH" && STATE.trueState.walk !== "HIGH") score -= 21;
+      }
+
+      // Coherence penalty
+      let seenPatient = false, seenUrgent = false;
+      for (const p of prior) {
+        if (p.post.U - p.pre.U < 0) seenPatient = true;
+        if (p.post.U - p.pre.U > 0) seenUrgent = true;
+      }
+      if (c.dU < 0 && seenUrgent) score -= 7;
+      if (c.dU > 0 && seenPatient) score -= 7;
+
+      if (score > -15 && (!best || score > best.score)) {
+        const reasons = [];
+        if (score > 0) reasons.push("Improves leverage from the same starting position.");
+        best = { signal: c, score, reasons };
+      }
+    }
+
+    results.push({ turn: rec.turn, actual: rec, bestAlt: best });
+  }
+
+  return results;
+}
+
+// ============================================================
+//  RESOLVE GAME — RESULTS SCREEN
+// ============================================================
+function resolveGame() {
+  STATE.phase = "RESOLVED";
+  updatePhaseBar();
+  document.getElementById("turnPanel").style.display = "none";
+
+  const score = scoreSequence();
+  const tier = assignTier(score);
+  const counterfactuals = buildCounterfactuals();
+
+  let html = "";
+
+  // Header
+  html += `<div class="results-section">
+    <h2>Postgame Film Review</h2>
+    <p>This review shows what your signals <em>communicated</em> to the Rivercats front office — not what you intended. In negotiation, leverage is about belief management, not clever moves.</p>
+  </div>`;
+
+  // Turn-by-turn
+  STATE.receipts.forEach((rec, i) => {
+    const sig = CATALOG.find(s => s.id === rec.signalId);
+    const judgment = getJudgment(rec);
+    const dA = rec.post.A - rec.pre.A;
+    const dU = rec.post.U - rec.pre.U;
+    const dF = rec.post.F - rec.pre.F;
+    const credSpent = rec.pre.cred - rec.post.cred;
+    const backlashGain = rec.post.backlash - rec.pre.backlash;
+
+    let whyText = "";
+    if (judgment.key === "backfired") {
+      if (dU > 0 && dA <= 0) whyText = "You increased urgency without strengthening alternatives, compressing your leverage window.";
+      else if (credSpent >= 20) whyText = "You paid a large credibility cost without securing belief movement in return.";
+      else if (dF < 0) whyText = "The signal weakened fairness perceptions, increasing resistance rather than compliance.";
+      else whyText = "The signal imposed costs without producing a compensating belief gain.";
+    } else {
+      if (dA > 0 && credSpent <= 10) whyText = "You strengthened perceived alternatives at low cost, improving your bargaining position.";
+      else if (dA > 0) whyText = "You improved alternative strength, but paid credibility to do so.";
+      else if (dF > 0) whyText = "You increased perceived fairness, stabilizing the negotiation environment.";
+      else whyText = "The signal modestly reinforced your position without materially shifting leverage.";
+    }
+
+    html += `<div class="results-section">
+      <h3>Round ${rec.turn} — ${sig ? sig.name : rec.signalId}</h3>
+      <p><strong>What you did:</strong> ${sig ? sig.shortAction : ''}</p>
+      <p><strong>What they saw:</strong> ${sig ? sig.whatTheySee : ''}</p>
+      <p>
+        <span class="result-stat">Alt: ${bandLabel(rec.pre.A)} → ${bandLabel(rec.post.A)}</span>
+        <span class="result-stat">Urg: ${bandLabel(rec.pre.U)} → ${bandLabel(rec.post.U)}</span>
+        <span class="result-stat">Fair: ${bandLabel(rec.pre.F)} → ${bandLabel(rec.post.F)}</span>
+      </p>
+      <p>
+        <span class="result-stat">Cred spent: ${credSpent}</span>
+        <span class="result-stat">Backlash gained: ${backlashGain}</span>
+        ${rec.flagsTriggered.length ? `<span class="result-stat">Flags: ${rec.flagsTriggered.join(", ")}</span>` : ''}
+      </p>
+      <p><strong>Judgment:</strong> <span style="color:${judgment.key === 'effective' ? 'var(--green)' : judgment.key === 'backfired' ? 'var(--red)' : 'var(--yellow)'};">${judgment.label}</span></p>
+      <p><strong>Why it mattered:</strong> ${whyText}</p>`;
+
+    // Counterfactual for weak turns
+    if (judgment.key === "backfired" && counterfactuals[i]?.bestAlt) {
+      const cf = counterfactuals[i].bestAlt;
+      html += `<div class="cf-box">
+        <strong>Better alternative:</strong> ${cf.signal.name}<br/>
+        <em>${cf.reasons.join(" ")}</em>
+      </div>`;
+    }
+
+    html += `</div>`;
+  });
+
+  // Scorecard
+  html += `<div class="results-section">
+    <h2>Sequence Scorecard</h2>
+    <p>
+      <span class="result-stat">Credibility spent: ${score.credSpent}</span>
+      <span class="result-stat">Max backlash: ${score.maxBacklash}</span>
+      <span class="result-stat">Contradictions: ${score.contradictions}</span>
+      <span class="result-stat">Net leverage utility: ${score.netUtility}</span>
+    </p>
+  </div>`;
+
+  // Final verdict
+  let verdictText = "";
+  if (score.netUtility >= 15 && score.contradictions === 0) {
+    verdictText = "You consistently built leverage without contradiction. This sequence would pressure a rational front office into making a competitive offer.";
+  } else if (score.netUtility >= 10 && score.credSpent <= 35) {
+    verdictText = "You managed belief without exhausting credibility, but left leverage unrealized through sequencing choices.";
+  } else if (score.contradictions > 0) {
+    verdictText = "Your signals conflicted in tone — first patient, then urgent (or vice versa). The front office noticed the inconsistency, weakening your position.";
+  } else if (score.credSpent > 50) {
+    verdictText = "You tried to move belief faster than your credibility could support, triggering resistance from the front office.";
+  } else {
+    verdictText = "The sequence showed insight, but belief movement was too limited to create durable leverage. Marcus might need to settle.";
+  }
+
+  html += `<div class="verdict-box">
+    <div class="tier-badge ${tier.tier.toLowerCase()}">${tier.tier === "NONE" ? "NO TIER" : tier.tier}</div>
+    <div class="verdict-text">${verdictText}</div>
+    ${tier.xp > 0 ? `<p style="margin-top:12px;color:var(--accent-glow);font-weight:600;">+${tier.xp} XP</p>` : ''}
+  </div>`;
+
+  // Restart button
+  html += `<div style="text-align:center;margin-top:24px;">
+    <button class="restart-btn" onclick="restart()">Try Again</button>
+  </div>`;
+
+  const screen = document.getElementById("resultsScreen");
+  screen.innerHTML = html;
+  screen.classList.add("visible");
+}
+
+function restart() {
+  document.getElementById("gameScreen").style.display = "none";
+  document.getElementById("setupScreen").style.display = "block";
+  document.getElementById("nameInput").value = STATE.name;
+  document.getElementById("emailInput").value = STATE.email;
+  document.getElementById("setupError").style.display = "none";
+}
+</script>
+</body>
+</html>
